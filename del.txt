@@ -1,0 +1,7 @@
+WINDOWS
+miemienet-0.1
+num_threads=12
+create Param, id=19950817, dims=4, numel=2400
+create Param, id=19950818, dims=4, numel=96
+create Param, id=19950819, dims=4, numel=9216
+create Param, id=199
