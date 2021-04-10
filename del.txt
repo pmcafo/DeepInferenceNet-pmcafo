@@ -173,4 +173,53 @@ create Param, id=19950985, dims=4, numel=2400
 create Param, id=19950986, dims=4, numel=96
 create Param, id=19950987, dims=4, numel=9216
 create Param, id=19950988, dims=4, numel=96
-create Param, id=19950989, dims=4, numel=
+create Param, id=19950989, dims=4, numel=7680
+create Param, id=19950990, dims=4, numel=80
+create Param, id=19950991, dims=4, numel=3072
+create Param, id=19950992, dims=4, numel=32
+create Param, id=19950993, dims=4, numel=2400
+create Param, id=19950994, dims=4, numel=1
+create Param, id=19950995, dims=4, numel=1
+create Param, id=19950996, dims=4, numel=1
+create Param, id=19950997, dims=4, numel=7680
+create Param, id=19950998, dims=4, numel=80
+create Param, id=19950999, dims=4, numel=3072
+create Param, id=19951000, dims=4, numel=32
+create Param, id=19951001, dims=4, numel=2400
+create Param, id=19951002, dims=4, numel=1
+create Param, id=19951003, dims=4, numel=1
+create Param, id=19951004, dims=4, numel=1
+create Param, id=19951005, dims=4, numel=7680
+create Param, id=19951006, dims=4, numel=80
+create Param, id=19951007, dims=4, numel=3072
+create Param, id=19951008, dims=4, numel=32
+create Param, id=19951009, dims=4, numel=2400
+create Param, id=19951010, dims=4, numel=1
+create Param, id=19951011, dims=4, numel=1
+create Param, id=19951012, dims=4, numel=1
+create Param, id=19951013, dims=4, numel=7680
+create Param, id=19951014, dims=4, numel=80
+create Param, id=19951015, dims=4, numel=3072
+create Param, id=19951016, dims=4, numel=32
+create Param, id=19951017, dims=4, numel=2400
+create Param, id=19951018, dims=4, numel=1
+create Param, id=19951019, dims=4, numel=1
+create Param, id=19951020, dims=4, numel=1
+create Param, id=19951021, dims=4, numel=8
+Warning! Checkpont Param name 'head.p3_feat.scale_reg' not found! miemienet would not load this param.
+Warning! Checkpont Param name 'head.p4_feat.scale_reg' not found! miemienet would not load this param.
+Warning! Checkpont Param name 'head.p5_feat.scale_reg' not found! miemienet would not load this param.
+Warning! Checkpont Param name 'head.p6_feat.scale_reg' not found! miemienet would not load this param.
+Warning! Checkpont Param name 'head.distribution_project.project' not found! miemienet would not load this param.
+param_names[0]=backbone.conv1.conv.weight
+param_names[1]=backbone.conv1.conv.bias
+param_names[2]=backbone.blocks2.0.dw_conv.conv.weight
+param_names[3]=backbone.blocks2.0.dw_conv.conv.bias
+param_names[4]=backbone.blocks2.0.pw_conv.conv.weight
+param_names[5]=backbone.blocks2.0.pw_conv.conv.bias
+param_names[6]=backbone.blocks3.0.dw_conv.conv.weight
+param_names[7]=backbone.blocks3.0.dw_conv.conv.bias
+param_names[8]=backbone.blocks3.0.pw_conv.conv.weight
+param_names[9]=backbone.blocks3.0.pw_conv.conv.bias
+param_names[10]=backbone.blocks3.1.dw_conv.conv.weight
+param_names[11]=backbone.blocks3.1.dw_conv
