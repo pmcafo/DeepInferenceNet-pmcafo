@@ -417,4 +417,29 @@ param_names[202]=head.cls_align.3.pwconv.weight
 param_names[203]=head.cls_align.3.pwconv.bias
 param_names[204]=head.distribution_project.weight
 test/000000000019.jpg
-[ INFO:0@0.465] global c:\build\master_winpack-build-win64-v
+[ INFO:0@0.465] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\parallel\registry_parallel.impl.hpp (96) cv::parallel::ParallelBackendRegistry::ParallelBackendRegistry core(parallel): Enabled backends(3, sorted by priority): ONETBB(1000); TBB(990); OPENMP(980)
+[ INFO:0@0.465] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\utils\plugin_loader.impl.hpp (67) cv::plugin::impl::DynamicLib::libraryLoad load C:\WINDOWS\SYSTEM32\opencv_core_parallel_onetbb455_64d.dll => FAILED
+[ INFO:0@0.470] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\utils\plugin_loader.impl.hpp (67) cv::plugin::impl::DynamicLib::libraryLoad load opencv_core_parallel_onetbb455_64d.dll => FAILED
+[ INFO:0@0.471] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\utils\plugin_loader.impl.hpp (67) cv::plugin::impl::DynamicLib::libraryLoad load C:\WINDOWS\SYSTEM32\opencv_core_parallel_tbb455_64d.dll => FAILED
+[ INFO:0@0.476] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\utils\plugin_loader.impl.hpp (67) cv::plugin::impl::DynamicLib::libraryLoad load opencv_core_parallel_tbb455_64d.dll => FAILED
+[ INFO:0@0.477] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\utils\plugin_loader.impl.hpp (67) cv::plugin::impl::DynamicLib::libraryLoad load C:\WINDOWS\SYSTEM32\opencv_core_parallel_openmp455_64d.dll => FAILED
+[ INFO:0@0.482] global c:\build\master_winpack-build-win64-vc14\opencv\modules\core\src\utils\plugin_loader.impl.hpp (67) cv::plugin::impl::DynamicLib::libraryLoad load opencv_core_parallel_openmp455_64d.dll => FAILED
+HW=173056
+C=3
+HWC=519168
+0.604932, 1.098039, 2.343704, 0.639181, 1.098039, 2.343704, 0.673431, 1.028011, 2.326274, 0.656306, 1.045518, 2.326274, 0.673431, 1.045518, 2.326274, 0.656306, 1.080532, 2.343704, 0.570682, 1.045518, 2.308845, 0.604932, 1.063025, 2.361133, 0.656306, 1.063025, 2.378562, 0.673431, 1.010504, 2.308845,
+create Tensor, id=0, dims=4, numel=519168
+create Tensor, id=1, dims=3, numel=33600
+create Tensor, id=2, dims=2, numel=1168128
+create Tensor, id=3, dims=4, numel=692224
+create Tensor, id=4, dims=4, numel=692224
+create Tensor, id=5, dims=4, numel=692224
+create Tensor, id=6, dims=4, numel=692224
+create Tensor, id=7, dims=4, numel=1038336
+create Tensor, id=8, dims=4, numel=1038336
+create Tensor, id=9, dims=4, numel=259584
+create Tensor, id=10, dims=4, numel=259584
+create Tensor, id=11, dims=4, numel=519168
+create Tensor, id=12, dims=4, numel=519168
+create Tensor, id=13, dims=4, numel=519168
+create Tensor, id=14, dims=4, numel=51
