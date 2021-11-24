@@ -1216,4 +1216,22 @@ delete Param, id=19950996, dims=4, numel=1
 delete Tensor, id=145, dims=4, numel=2704
 delete Tensor, id=143, dims=4, numel=2704
 delete Tensor, id=144, dims=4, numel=2704
-delete Para
+delete Param, id=19951021, dims=4, numel=8
+delete Tensor, id=201, dims=4, numel=1568
+delete Tensor, id=181, dims=4, numel=5408
+delete Tensor, id=161, dims=4, numel=21632
+delete Tensor, id=141, dims=4, numel=86528
+delete Tensor, id=200, dims=3, numel=3920
+delete Tensor, id=180, dims=3, numel=13520
+delete Tensor, id=160, dims=3, numel=54080
+delete Tensor, id=140, dims=3, numel=216320
+delete Tensor, id=206, dims=3, numel=196
+delete Tensor, id=186, dims=3, numel=676
+delete Tensor, id=166, dims=3, numel=2704
+delete Tensor, id=146, dims=3, numel=10816
+delete Tensor, id=208, dims=3, numel=14392
+delete Tensor, id=207, dims=3, numel=287840
+delete Tensor, id=1, dims=3, numel=33600
+
+D:\GitHub\miemienet2\x64\Debug\miemienet.exe (进程 13372)已退出，代码为 0。
+按任意键关闭此窗口. . .
