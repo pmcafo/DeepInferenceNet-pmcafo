@@ -213,4 +213,75 @@ def gen_transpose_common():
                 if 'gen cpp invoke code start' in line:
                     paste_zone = True
                     new_code += content_cpp_invoke
-      
+                if 'gen x86 invoke code start' in line:
+                    paste_zone = True
+                    new_code += content_x86_invoke
+        f.close()
+    with open(src_path, 'w', encoding='utf-8') as f:
+        f.write(new_code)
+        f.close()
+
+    src_path = 'miemienet/nn/transpose.cpp'
+    new_code = ''
+    paste_zone = False
+    with open(src_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if paste_zone:
+                if 'gen forward code end' in line:
+                    paste_zone = False
+                    new_code += line
+            else:
+                new_code += line
+                if 'gen forward code start' in line:
+                    paste_zone = True
+                    new_code += content_forward
+        f.close()
+    with open(src_path, 'w', encoding='utf-8') as f:
+        f.write(new_code)
+        f.close()
+    print()
+
+def elem_get_index(d, D, shape):
+    real_shape = []
+    real_i = []
+    p = 0
+    for s in shape:
+        if s != '1':
+            real_shape.append(D[p])
+            real_i.append(d[p])
+        p += 1
+    if len(real_shape) == 4:
+        _index = '((%s * %s + %s) * %s + %s) * %s + %s' % (real_i[0], real_shape[1], real_i[1], real_shape[2], real_i[2], real_shape[3], real_i[3])
+    elif len(real_shape) == 3:
+        _index = '(%s * %s + %s) * %s + %s' % (real_i[0], real_shape[1], real_i[1], real_shape[2], real_i[2])
+    elif len(real_shape) == 2:
+        _index = '%s * %s + %s' % (real_i[0], real_shape[1], real_i[1])
+    elif len(real_shape) == 1:
+        _index = '%s' % (real_i[0], )
+    elif len(real_shape) == 0:
+        _index = '0'
+    return _index
+
+def elem_get_out_index(d, D, shape1, shape2):
+    real_shape = []
+    real_i = []
+    p = 0
+    for s1 in shape1:
+        s2 = shape2[p]
+        if s1 != '1' or s2 != '1':
+            real_shape.append(D[p])
+            real_i.append(d[p])
+        p += 1
+
+    if len(real_shape) == 4:
+        _index = '((%s * %s + %s) * %s + %s) * %s + %s' % (real_i[0], real_shape[1], real_i[1], real_shape[2], real_i[2], real_shape[3], real_i[3])
+    elif len(real_shape) == 3:
+        _index = '(%s * %s + %s) * %s + %s' % (real_i[0], real_shape[1], real_i[1], real_shape[2], real_i[2])
+    elif len(real_shape) == 2:
+        _index = '%s * %s + %s' % (real_i[0], real_shape[1], real_i[1])
+    elif len(real_shape) == 1:
+        _index = '%s' % (real_i[0], )
+    elif len(real_shape) == 0:
+        _index = '0'
+    return _index
+
