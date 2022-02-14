@@ -141,4 +141,76 @@ def gen_transpose_common():
                    '        const int %s = input->shape->at(%d);\n' % (D[1], 1) + \
                    '        const int %s = input->shape->at(%d);\n' % (D[2], 2) + \
                    '        const int %s = input->shape->at(%d);\n' % (D[3], 3) + \
-              
+                   '        output = new SNT Tensor(MMSHAPE4D(%s, %s, %s, %s), FP32, false, false);\n' % (D[t[0]], D[t[1]], D[t[2]], D[t[3]]) + \
+                   '    }\n'
+        content_cpp_invoke += templat2
+        content_forward += templat3
+
+    with open('gen_code_cpp.txt', 'w', encoding='utf-8') as f:
+        f.write(content_cpp)
+        f.close()
+    with open('gen_code_cpp_invoke.txt', 'w', encoding='utf-8') as f:
+        f.write(content_cpp_invoke)
+        f.close()
+
+
+    content_x86 = content_cpp.replace("_cpp_kernel(", "_x86_kernel(") + '\n'
+    content_x86_invoke = content_cpp_invoke.replace("_cpp_kernel<", "_x86_kernel<")
+    content_x86 = '#if BACKEND_X86\n' + content_x86 + '#endif // BACKEND_X86\n'
+    content_x86_invoke = '#if BACKEND_X86\n' + content_x86_invoke + '#endif // BACKEND_X86\n'
+    with open('gen_code_x86.txt', 'w', encoding='utf-8') as f:
+        f.write(content_x86)
+        f.close()
+    with open('gen_code_x86_invoke.txt', 'w', encoding='utf-8') as f:
+        f.write(content_x86_invoke)
+        f.close()
+
+    # 直接替换代码
+    '''
+注解对配对使用：
+// gen cpp code start
+// gen cpp code end
+
+// gen x86 code start
+// gen x86 code end
+
+// gen cpp invoke code start
+// gen cpp invoke code end
+
+// gen x86 invoke code start
+// gen x86 invoke code end
+
+// gen forward code start
+// gen forward code end
+
+    '''
+    src_path = 'miemienet/nn/common/transpose_common.cpp'
+    new_code = ''
+    paste_zone = False
+    with open(src_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if paste_zone:
+                if 'gen cpp code end' in line:
+                    paste_zone = False
+                    new_code += line
+                if 'gen x86 code end' in line:
+                    paste_zone = False
+                    new_code += line
+                if 'gen cpp invoke code end' in line:
+                    paste_zone = False
+                    new_code += line
+                if 'gen x86 invoke code end' in line:
+                    paste_zone = False
+                    new_code += line
+            else:
+                new_code += line
+                if 'gen cpp code start' in line:
+                    paste_zone = True
+                    new_code += content_cpp
+                if 'gen x86 code start' in line:
+                    paste_zone = True
+                    new_code += content_x86
+                if 'gen cpp invoke code start' in line:
+                    paste_zone = True
+                    new_code += content_cpp_invoke
+      
