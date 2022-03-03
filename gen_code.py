@@ -285,3 +285,53 @@ def elem_get_out_index(d, D, shape1, shape2):
         _index = '0'
     return _index
 
+def gen_elementwise_common():
+    ndim = 4
+    D = ['N', 'C', 'H', 'W']
+    d = ['n', 'c', 'h', 'w']
+    tensor1_shapes = []
+    tensor2_shapes = []
+    for i in range(ndim + 1):
+        tensor1_shape = list(itertools.combinations(range(ndim), i))
+        for shape1 in tensor1_shape:
+            cp1 = copy.deepcopy(D)
+            for i1 in shape1:
+                cp1[i1] = '1'
+            tensor1_shapes.append(cp1)
+            tensor2_shapes.append(copy.deepcopy(cp1))
+
+    content_cpp_xop = ''
+    content_cpp = ''
+    content_cpp_invoke  = '        const int N0 = a->shape->at(0);\n'
+    content_cpp_invoke += '        const int C0 = a->shape->at(1);\n'
+    content_cpp_invoke += '        const int H0 = a->shape->at(2);\n'
+    content_cpp_invoke += '        const int W0 = a->shape->at(3);\n'
+    content_cpp_invoke += '        const int N1 = b->shape->at(0);\n'
+    content_cpp_invoke += '        const int C1 = b->shape->at(1);\n'
+    content_cpp_invoke += '        const int H1 = b->shape->at(2);\n'
+    content_cpp_invoke += '        const int W1 = b->shape->at(3);\n'
+    content_cpp_invoke += '        const int N = std::max(N0, N1);\n'
+    content_cpp_invoke += '        const int C = std::max(C0, C1);\n'
+    content_cpp_invoke += '        const int H = std::max(H0, H1);\n'
+    content_cpp_invoke += '        const int W = std::max(W0, W1);\n'
+    content_cpp_xop_invoke = ''
+    kkk = 0
+    for s1 in tensor1_shapes:
+        for s2 in tensor2_shapes:
+            # 是否过滤掉一些不常见情况。过滤掉的话可以减少代码量，提高编译速度。
+            filt_ = False
+            filt_ = True
+            continue_ = True
+            if filt_:
+                # 添加白名单。白名单不会跳过
+                if s1[0] == 'N' and s1[1] == 'C' and s1[2] == 'H' and s1[3] == 'W' and s2[0] == 'N' and s2[1] == 'C' and s2[2] == 'H' and s2[3] == 'W':
+                    continue_ = False
+                if s1[0] == '1' and s1[1] == '1' and s1[2] == '1' and s2[0] == '1' and s2[1] == '1' and s2[2] == '1':
+                    continue_ = False
+                if s1[0] == '1' and s1[1] == '1' and s2[0] == '1' and s2[1] == '1':
+                    continue_ = False
+                if s1[0] == '1' and s2[0] == '1':
+                    continue_ = False
+                if s1[0] == 'N' and s1[1] == 'C' and s1[2] == 'H' and s1[3] == 'W' and s2[0] == '1' and s2[1] == '1' and s2[2] == '1' and s2[3] == 'W':
+                    continue_ = False
+                if s1[0] == 'N' and s1[1] == 'C' and s1[2] == 'H' and s1[3] == 'W' and s2[0] == '1'
