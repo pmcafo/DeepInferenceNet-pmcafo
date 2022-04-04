@@ -334,4 +334,42 @@ def gen_elementwise_common():
                     continue_ = False
                 if s1[0] == 'N' and s1[1] == 'C' and s1[2] == 'H' and s1[3] == 'W' and s2[0] == '1' and s2[1] == '1' and s2[2] == '1' and s2[3] == 'W':
                     continue_ = False
-                if s1[0] == 'N' and s1[1] == 'C' and s1[2] == 'H' and s1[3] == 'W' and s2[0] == '1'
+                if s1[0] == 'N' and s1[1] == 'C' and s1[2] == 'H' and s1[3] == 'W' and s2[0] == '1' and s2[1] == 'C' and s2[2] == '1' and s2[3] == '1':
+                    continue_ = False
+                if s1[0] == 'N' and s1[1] == '1' and s1[2] == '1' and s1[3] == 'W' and s2[0] == 'N' and s2[1] == '1' and s2[2] == '1' and s2[3] == 'W':
+                    continue_ = False
+                if s1[0] == 'N' and s1[1] == '1' and s1[2] == '1' and s1[3] == 'W' and s2[0] == '1' and s2[1] == '1' and s2[2] == '1' and s2[3] == 'W':
+                    continue_ = False
+            if filt_ and continue_:
+                continue
+            _left = 'x[%s]' % (elem_get_index(d, D, s1))
+            _right = 'y[%s]' % (elem_get_index(d, D, s2))
+            _out = 'z[%s]' % (elem_get_out_index(d, D, s1, s2))
+            template = 'template<typename data_t>\n' + \
+                       'void elem4d_%s%s%s%s_oopp_%s%s%s%s_cpp_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int %s, int %s, int %s, int %s) {\n' % (s1[0], s1[1], s1[2], s1[3], s2[0], s2[1], s2[2], s2[3], D[0], D[1], D[2], D[3]) + \
+                       '    #pragma omp parallel for num_threads(num_threads_)\n' + \
+                       '    for (int %s = 0; %s < %s; %s++) {\n' % (d[0], d[0], D[0], d[0]) + \
+                       '        for (int %s = 0; %s < %s; %s++) {\n' % (d[1], d[1], D[1], d[1]) + \
+                       '            for (int %s = 0; %s < %s; %s++) {\n' % (d[2], d[2], D[2], d[2]) + \
+                       '                for (int %s = 0; %s < %s; %s++) {\n' % (d[3], d[3], D[3], d[3]) + \
+                       '                    %s = qwel%sqwem%sqwer;\n' % (_out, _left, _right) + \
+                       '                }\n' + \
+                       '            }\n' + \
+                       '        }\n' + \
+                       '    }\n' + \
+                       '}\n'
+            content_cpp_xop += template + '\n'
+            cond1 = ''
+            if s1[0] == D[0] and s2[0] == D[0]:
+                cond1 = 'N0 == N1 && N1 > 1'
+            if s1[0] == D[0] and s2[0] == '1':
+                cond1 = 'N0 > 1 && N1 == 1'
+            if s1[0] == '1' and s2[0] == D[0]:
+                cond1 = 'N0 == 1 && N1 > 1'
+            if s1[0] == '1' and s2[0] == '1':
+                cond1 = 'N0 == 1 && N1 == 1'
+            cond2 = ''
+            if s1[1] == D[1] and s2[1] == D[1]:
+                cond2 = 'C0 == C1 && C1 > 1'
+            if s1[1] == D[1] and s2[1] == '1':
+                cond2 = 'C0 > 1
