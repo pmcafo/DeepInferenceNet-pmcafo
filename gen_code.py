@@ -372,4 +372,48 @@ def gen_elementwise_common():
             if s1[1] == D[1] and s2[1] == D[1]:
                 cond2 = 'C0 == C1 && C1 > 1'
             if s1[1] == D[1] and s2[1] == '1':
-                cond2 = 'C0 > 1
+                cond2 = 'C0 > 1 && C1 == 1'
+            if s1[1] == '1' and s2[1] == D[1]:
+                cond2 = 'C0 == 1 && C1 > 1'
+            if s1[1] == '1' and s2[1] == '1':
+                cond2 = 'C0 == 1 && C1 == 1'
+            cond3 = ''
+            if s1[2] == D[2] and s2[2] == D[2]:
+                cond3 = 'H0 == H1 && H1 > 1'
+            if s1[2] == D[2] and s2[2] == '1':
+                cond3 = 'H0 > 1 && H1 == 1'
+            if s1[2] == '1' and s2[2] == D[2]:
+                cond3 = 'H0 == 1 && H1 > 1'
+            if s1[2] == '1' and s2[2] == '1':
+                cond3 = 'H0 == 1 && H1 == 1'
+            cond4 = ''
+            if s1[3] == D[3] and s2[3] == D[3]:
+                cond4 = 'W0 == W1 && W1 > 1'
+            if s1[3] == D[3] and s2[3] == '1':
+                cond4 = 'W0 > 1 && W1 == 1'
+            if s1[3] == '1' and s2[3] == D[3]:
+                cond4 = 'W0 == 1 && W1 > 1'
+            if s1[3] == '1' and s2[3] == '1':
+                cond4 = 'W0 == 1 && W1 == 1'
+            templat2 = '            else if (%s && %s && %s && %s) {\n' % (cond1, cond2, cond3, cond4) + \
+                       '                elem4d_%s%s%s%s_oopp_%s%s%s%s_cpp_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, %s, %s, %s, %s);\n' % (s1[0], s1[1], s1[2], s1[3], s2[0], s2[1], s2[2], s2[3], D[0], D[1], D[2], D[3]) + \
+                       '            }\n'
+            if kkk == 0:
+                templat2 = templat2.replace("else if (", "if (")
+            kkk += 1
+            content_cpp_xop_invoke += templat2
+    # 不支持的情况错误提醒
+    content_cpp_xop_invoke += '            else {\n' + \
+                              '                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\\n", N0, C0, H0, W0, N1, C1, H1, W1);\n' + \
+                              '                exit(1);\n' + \
+                              '            }\n'
+    content_cpp_invoke += '        if (op_type == %s) {\n' % ('ELE_ADD', )
+    content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'add')
+    content_cpp_invoke += '        }\n'
+    content_cpp_invoke += '        else if (op_type == %s) {\n' % ('ELE_SUB', )
+    content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'sub')
+    content_cpp_invoke += '        }\n'
+    content_cpp_invoke += '        else if (op_type == %s) {\n' % ('ELE_MUL', )
+    content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'mul')
+    content_cpp_invoke += '        }\n'
+    content_cpp_invoke += '        el
