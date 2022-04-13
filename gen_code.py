@@ -416,4 +416,52 @@ def gen_elementwise_common():
     content_cpp_invoke += '        else if (op_type == %s) {\n' % ('ELE_MUL', )
     content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'mul')
     content_cpp_invoke += '        }\n'
-    content_cpp_invoke += '        el
+    content_cpp_invoke += '        else if (op_type == %s) {\n' % ('ELE_DIV', )
+    content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'div')
+    content_cpp_invoke += '        }\n'
+    content_cpp_invoke += '        else if (op_type == %s) {\n' % ('ELE_MIN', )
+    content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'min')
+    content_cpp_invoke += '        }\n'
+    content_cpp_invoke += '        else if (op_type == %s) {\n' % ('ELE_MAX', )
+    content_cpp_invoke += content_cpp_xop_invoke.replace('oopp', 'max')
+    content_cpp_invoke += '        }\n'
+    content_cpp += content_cpp_xop.replace('oopp', 'add').replace('qwel', '').replace('qwem', ' + ').replace('qwer', '')
+    content_cpp += content_cpp_xop.replace('oopp', 'sub').replace('qwel', '').replace('qwem', ' - ').replace('qwer', '')
+    content_cpp += content_cpp_xop.replace('oopp', 'mul').replace('qwel', '').replace('qwem', ' * ').replace('qwer', '')
+    content_cpp += content_cpp_xop.replace('oopp', 'div').replace('qwel', '').replace('qwem', ' / ').replace('qwer', '')
+    content_cpp += content_cpp_xop.replace('oopp', 'min').replace('qwel', 'std::min(').replace('qwem', ', ').replace('qwer', ')')
+    content_cpp += content_cpp_xop.replace('oopp', 'max').replace('qwel', 'std::max(').replace('qwem', ', ').replace('qwer', ')')
+
+
+
+    with open('gen_code_cpp.txt', 'w', encoding='utf-8') as f:
+        f.write(content_cpp)
+        f.close()
+    with open('gen_code_cpp_invoke.txt', 'w', encoding='utf-8') as f:
+        f.write(content_cpp_invoke)
+        f.close()
+
+    content_x86 = content_cpp.replace("_cpp_kernel(", "_x86_kernel(") + '\n'
+    content_x86_invoke = content_cpp_invoke.replace("_cpp_kernel<", "_x86_kernel<")
+    content_x86 = '#if BACKEND_X86\n' + content_x86 + '#endif // BACKEND_X86\n'
+    content_x86_invoke = '#if BACKEND_X86\n' + content_x86_invoke + '#endif // BACKEND_X86\n'
+    with open('gen_code_x86.txt', 'w', encoding='utf-8') as f:
+        f.write(content_x86)
+        f.close()
+    with open('gen_code_x86_invoke.txt', 'w', encoding='utf-8') as f:
+        f.write(content_x86_invoke)
+        f.close()
+
+    # 直接替换代码
+    src_path = 'miemienet/nn/common/elementwise_common.cpp'
+    new_code = ''
+    paste_zone = False
+    with open(src_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if paste_zone:
+                if 'gen cpp code end' in line:
+                    paste_zone = False
+                    new_code += line
+                if 'gen x86 code end' in line:
+                    paste_zone = False
+                   
