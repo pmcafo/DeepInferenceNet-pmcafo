@@ -464,4 +464,94 @@ def gen_elementwise_common():
                     new_code += line
                 if 'gen x86 code end' in line:
                     paste_zone = False
-                   
+                    new_code += line
+                if 'gen cpp invoke code end' in line:
+                    paste_zone = False
+                    new_code += line
+                if 'gen x86 invoke code end' in line:
+                    paste_zone = False
+                    new_code += line
+            else:
+                new_code += line
+                if 'gen cpp code start' in line:
+                    paste_zone = True
+                    new_code += content_cpp
+                if 'gen x86 code start' in line:
+                    paste_zone = True
+                    new_code += content_x86
+                if 'gen cpp invoke code start' in line:
+                    paste_zone = True
+                    new_code += content_cpp_invoke
+                if 'gen x86 invoke code start' in line:
+                    paste_zone = True
+                    new_code += content_x86_invoke
+        f.close()
+    with open(src_path, 'w', encoding='utf-8') as f:
+        f.write(new_code)
+        f.close()
+    print()
+
+
+def get_construct_args(args):
+    # 去掉默认参数
+    assert args[0] == '('
+    assert args[-1] == ')'
+    ss = args[1:-1].split(',')
+    new_args = []
+    for s in ss:
+        s = s.strip()
+        if 'Tensor* ' in s:
+            continue
+        if 'std::vector<Tensor*>* ' in s:
+            continue
+        new_args.append(s)
+    result = ''
+    for s in new_args:
+        result += s + ', '
+    result = '(' + result[:-2] + ')'
+    return result
+
+def args_no_default(args):
+    # 去掉默认参数
+    assert args[0] == '('
+    assert args[-1] == ')'
+    ss = args[1:-1].split(',')
+    new_args = []
+    for s in ss:
+        s = s.strip()
+        if '=' in s:
+            new_args.append(s.split('=')[0])
+        else:
+            new_args.append(s)
+    result = ''
+    for s in new_args:
+        result += s + ', '
+    result = '(' + result[:-2] + ')'
+    return result
+
+def args_no_type(args):
+    # 去掉类型
+    assert args[0] == '('
+    assert args[-1] == ')'
+    ss = args[1:-1].split(',')
+    new_args = []
+    for s in ss:
+        s = s.strip()
+        if '* ' in s:
+            new_args.append(s.split('* ')[1])
+        elif ' *' in s:
+            new_args.append(s.split(' *')[1])
+        elif ' ' in s:
+            new_args.append(s.split(' ')[1])
+        elif '  ' in s:
+            new_args.append(s.split('  ')[1])
+        else:
+            raise NotImplemented("")
+    result = ''
+    for s in new_args:
+        result += s + ', '
+    result = '(' + result[:-2] + ')'
+    return result
+
+def get_chengyuan(args):
+    # 获取层的
