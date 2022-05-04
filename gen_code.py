@@ -554,4 +554,76 @@ def args_no_type(args):
     return result
 
 def get_chengyuan(args):
-    # 获取层的
+    # 获取层的成员变量
+    assert args[0] == '('
+    assert args[-1] == ')'
+    ss = args[1:-1].split(',')
+    result = []
+    for s in ss:
+        s = s.strip()
+        result.append(s)
+    return result
+
+def gen_new_op():
+    # F_args 指的是 xxx_common.h 里函数申明的参数列表
+    # construct_args 比 F_args，少了 Tensor* , std::vector<Tensor*>* 等参数
+    op_name = 'avgpool2d'
+    class_name = 'AvgPool2d'
+    F_args = '(Tensor* input, Tensor* output, int kernel_h=1, int kernel_w=1, int stride_h=1, int stride_w=1, int padding_h=0, int padding_w=0, bool ceil_mode=false)'
+    forward_type = 'SISO'
+
+    op_name = 'activation'
+    class_name = 'Activation'
+    F_args = '(Tensor* input, Tensor* output, char* type, float alpha)'
+    forward_type = 'SISO'
+
+    op_name = 'softmax'
+    class_name = 'Softmax'
+    F_args = '(Tensor* input, Tensor* output, int dim=-1)'
+    forward_type = 'SISO'
+
+    op_name = 'concat'
+    class_name = 'Concat'
+    F_args = '(Tensor* input1, Tensor* input2, Tensor* input3, Tensor* input4, Tensor* output, int dim=-1)'
+    forward_type = 'MISO'
+
+    op_name = 'interp'
+    class_name = 'Interp'
+    F_args = '(Tensor* input, Tensor* output, int size_h=0, int size_w=0, float scale_h=-1.f, float scale_w=-1.f, char* mode="nearest", bool align_corners=false, bool recompute_scale_factor=false)'
+    forward_type = 'SISO'
+
+    op_name = 'reduce'
+    class_name = 'Reduce'
+    F_args = '(Tensor* input, Tensor* output, std::vector<int>* dims, bool keepdim, int op_type)'
+    forward_type = 'SISO'
+
+    op_name = 'transpose'
+    class_name = 'Transpose'
+    F_args = '(Tensor* input, Tensor* output, int transpose_type)'
+    forward_type = 'SISO'
+
+    construct_args = get_construct_args(F_args)
+
+    print("modify miemienet.h :")
+    aaa = '#include "nn/%s.h"' % (op_name, )
+    print(aaa)
+    aaa = '#include "nn/common/%s_common.h"' % (op_name, )
+    print(aaa)
+    print()
+
+    nn_h_name = 'miemienet/nn/%s.h' % (op_name, )
+    if not os.path.exists(nn_h_name):
+        with open(nn_h_name, 'w', encoding='utf-8') as f:
+            f.write('')
+            f.close()
+    print("new file %s :" % nn_h_name)
+    nn_h_macro = '__%s_H__' % (op_name.upper(), )
+    print("macro: %s" % nn_h_macro)
+    construct_args1 = args_no_default(construct_args)
+    chengyuan = get_chengyuan(construct_args1)
+    for cy in chengyuan:
+        print('    %s;' % cy)
+    print("class name: %s%s" % (class_name, construct_args))
+    print()
+
+    nn_cpp_name = 'miemi
