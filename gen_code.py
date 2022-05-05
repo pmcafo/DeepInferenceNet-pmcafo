@@ -626,4 +626,71 @@ def gen_new_op():
     print("class name: %s%s" % (class_name, construct_args))
     print()
 
-    nn_cpp_name = 'miemi
+    nn_cpp_name = 'miemienet/nn/%s.cpp' % (op_name, )
+    if not os.path.exists(nn_cpp_name):
+        with open(nn_cpp_name, 'w', encoding='utf-8') as f:
+            f.write('')
+            f.close()
+    print("new file %s :" % nn_cpp_name)
+    print('#include "%s.h"' % op_name)
+    print('#include "common/%s_common.h"' % op_name)
+    print("class name: %s%s" % (class_name, construct_args1))
+    print()
+    for cy in chengyuan:
+        cyy = cy.split(' ')[1]
+        print('    this->%s = %s;' % (cyy, cyy))
+    F_args1 = args_no_default(F_args)
+    F_args2 = args_no_type(F_args1)
+    print("    miemienet::functional::%s%s;" % (op_name, F_args2))
+    print()
+
+    nn_common_h_name = 'miemienet/nn/common/%s_common.h' % (op_name, )
+    if not os.path.exists(nn_common_h_name):
+        with open(nn_common_h_name, 'w', encoding='utf-8') as f:
+            f.write('')
+            f.close()
+    print("new file %s :" % nn_common_h_name)
+    nn_common_h_macro = '__F_%s_COMMON_H__' % (op_name.upper(), )
+    print("macro: %s" % nn_common_h_macro)
+    if forward_type == "SISO":
+        print('void %s%s;' % (op_name, F_args)); print();
+    elif forward_type == "MISO":
+        print('void %s%s;' % (op_name, F_args)); print();
+    print()
+
+    nn_common_cpp_name = 'miemienet/nn/common/%s_common.cpp' % (op_name, )
+    if not os.path.exists(nn_common_cpp_name):
+        with open(nn_common_cpp_name, 'w', encoding='utf-8') as f:
+            f.write('')
+            f.close()
+    print("new file %s :" % nn_common_cpp_name)
+    if forward_type == "SISO":
+        print('void %s%s' % (op_name, F_args1)); print();
+    elif forward_type == "MISO":
+        print('void %s%s' % (op_name, F_args1)); print();
+    print()
+
+
+def gen_miemiedet_code():
+    class_name = 'ConvBNLayer'
+    construct_args = '(int ch_in, int ch_out, int filter_size=3, int stride=1, int groups=1, int padding=0, char* act_name=nullptr)'
+    forward_type = 'SISO'
+
+    class_name = 'RepVggBlock'
+    construct_args = '(int ch_in, int ch_out, char* act_name="relu")'
+    forward_type = 'SISO'
+
+    class_name = 'BasicBlock'
+    construct_args = '(int ch_in, int ch_out, char* act_name="relu", bool shortcut=true)'
+    forward_type = 'SISO'
+
+    class_name = 'EffectiveSELayer'
+    construct_args = '(int channels, char* act_name="hardsigmoid")'
+    forward_type = 'SISO'
+
+    class_name = 'CSPResStage'
+    construct_args = '(int ch_in, int ch_out, int n, int stride, char* act_name="relu", bool use_attn=true)'
+    forward_type = 'SISO'
+
+    class_name = 'CSPResNet'
+    construct_
