@@ -693,4 +693,60 @@ def gen_miemiedet_code():
     forward_type = 'SISO'
 
     class_name = 'CSPResNet'
-    construct_
+    construct_args = '(std::vector<int>* layers, std::vector<int>* channels, char* act_name="swish", std::vector<int>* return_idx, bool depth_wise=false, bool use_large_stem=false, float width_mult=1.f, float depth_mult=1.f, int freeze_at=-1)'
+    forward_type = 'SIMO'
+
+    class_name = 'SPP'
+    construct_args = '(int ch_in, int ch_out, int k, char* act_name="swish")'
+    forward_type = 'SISO'
+
+    class_name = 'CSPStage'
+    construct_args = '(int ch_in, int ch_out, int n, char* act_name="swish", bool spp=false)'
+    forward_type = 'SISO'
+
+    class_name = 'CustomCSPPAN'
+    construct_args = '(std::vector<int>* in_channels, std::vector<int>* out_channels, char* act_name="leakyrelu", int stage_num=1, int block_num=3, bool drop_block=false, int block_size=3, float keep_prob=0.9f, bool spp=false, float width_mult=1.f, float depth_mult=1.f)'
+    forward_type = 'MIMO'
+
+    class_name = 'ESEAttn'
+    construct_args = '(int feat_channels, char* act_name="swish")'
+    forward_type = 'MISO'
+
+    class_name = 'PPYOLOEHead'
+    construct_args = '(std::vector<int>* in_channels, int num_classes=80, char* act_name="swish", std::vector<float>* fpn_strides=nullptr, float grid_cell_scale=5.f, float grid_cell_offset=0.5f, int reg_max=16, int static_assigner_epoch=4, bool use_varifocal_loss=true)'
+    forward_type = 'MIMO'
+
+    class_name = 'PicoHeadV2'
+    construct_args = '(std::vector<int>* in_channels, int num_classes=80, std::vector<float>* fpn_stride=nullptr, bool use_align_head=true, int reg_max=16, int feat_in_chan=96, float cell_offset=0.f, char* act_name="hardswish", float grid_cell_scale=5.f)'
+    forward_type = 'MIMO'
+
+    print("new file *.h :")
+    construct_args1 = args_no_default(construct_args)
+    construct_args2 = args_no_type(construct_args1)
+    chengyuan = get_chengyuan(construct_args1)
+    print("class name: %s%s" % (class_name, construct_args))
+    for cy in chengyuan:
+        print('    %s;' % cy)
+    print()
+
+    print("new file *.cpp :")
+    print("class name: %s%s" % (class_name, construct_args1))
+    # print('    this->%s = %s;' % ("forward_type", forward_type))
+    for cy in chengyuan:
+        cyy = cy.split(' ')[1]
+        print('    this->%s = %s;' % (cyy, cyy))
+    print(construct_args2)
+
+
+
+if __name__ == "__main__":
+    # 生成新op的需要增加的代码
+    # gen_new_op()
+    # 根据构造函数的参数列表，生成C++的成员变量声明，以及 this->xxx = xxx;语句。
+    gen_miemiedet_code()
+
+    # 生成 transpose op，common 版本的代码
+    # gen_transpose_common()
+    # 生成 elementwise op，common 版本的代码
+    # gen_elementwise_common()
+
