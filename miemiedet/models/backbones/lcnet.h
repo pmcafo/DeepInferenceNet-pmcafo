@@ -75,4 +75,15 @@ public:
     Sequential* blocks6;
 
     float scale;
-    std::vec
+    std::vector<int>* feature_maps;
+
+    int make_divisible(float v, int divisor=8, int min_value=-1);
+    virtual std::vector<Tensor*>* create_tensors(Tensor* input, char miemie2013);
+    virtual std::vector<Tensor*>* feed_forward(Tensor* input, char miemie2013);
+private:
+};
+
+
+}  // namespace miemiedet
+
+#endif // __MIEMIEDET_LCNET_H__
