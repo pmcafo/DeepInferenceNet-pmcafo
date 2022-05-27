@@ -107,4 +107,79 @@ PPYOLOEHead::PPYOLOEHead(std::vector<int>* in_channels, int num_classes, char* a
         Conv2d* layer2 = new SNT Conv2d(in_c, 4 * (reg_max + 1), 3, 1, 1, 1, 1, true);
         pred_reg->add_sublayer(layer_name2, layer2);
     }
-    regis
+    register_sublayer("pred_cls", pred_cls);
+    register_sublayer("pred_reg", pred_reg);
+    this->global_avgpools = new LayerList();
+
+    proj_conv = new SNT Conv2d(reg_max + 1, 1, 1, 1, 0, 1, 1, false);
+    for (int k = 0; k < reg_max + 1; k++)
+    {
+        *(proj_conv->weight->data_fp32 + k) = (float)k;
+    }
+    register_sublayer("proj_conv", proj_conv);
+
+    concat1 = new SNT Concat(1);
+    register_sublayer("concat1", concat1);
+    concat2 = new SNT Concat(1);
+    register_sublayer("concat2", concat2);
+}
+
+PPYOLOEHead::~PPYOLOEHead()
+{
+    delete stem_cls;
+    delete stem_reg;
+    delete pred_cls;
+    delete pred_reg;
+    delete proj_conv;
+    delete global_avgpools;
+    delete concat1;
+    delete concat2;
+}
+
+std::vector<Tensor*>* PPYOLOEHead::create_tensors(std::vector<Tensor*>* inputs, char miemie2013)
+{
+    std::vector<Tensor*>* cls_score_list = temp_tensors;
+    std::vector<Tensor*>* reg_dist_list = temp2_tensors;
+    int gap_id = 0;
+    miemienet::Config* cfg = miemienet::Config::getInstance();
+    for (int i = 0; i < inputs->size(); i++)
+    {
+        Tensor* feat = inputs->at(i);
+        Reduce* reduce;
+        if (cfg->image_data_format == NCHW)
+        {
+            reduce = new SNT Reduce(MMSHAPE2D(2, 3), true, RED_MEAN);
+        }
+        else if (cfg->image_data_format == NHWC)
+        {
+            reduce = new SNT Reduce(MMSHAPE2D(1, 2), true, RED_MEAN);
+        }
+        char* layer_name = new char[64];
+        sprintf(layer_name, "%d", gap_id++);
+        global_avgpools->add_sublayer(layer_name, reduce);
+        Tensor* avg_feat = reduce->create_tensors(feat);
+
+        Tensor* cls_score = stem_cls->at(i)->create_tensors(feat, avg_feat);
+        cls_score = pred_cls->at(i)->create_tensors(cls_score);
+
+        Tensor* reg_feat = stem_reg->at(i)->create_tensors(feat, avg_feat);
+        reg_feat = pred_reg->at(i)->create_tensors(reg_feat);
+
+        const int N = reg_feat->shape->at(0);
+        reg_feat->reshape(MMSHAPE4D(N, -1, 4, reg_max + 1));
+//        miemienet::functional::softmax(reg_feat, reg_feat, -1);
+        Tensor* reg_dist = proj_conv->create_tensors(reg_feat);
+
+        reg_dist->reshape(MMSHAPE3D(N, -1, 4));
+        cls_score->reshape(MMSHAPE3D(N, -1, num_classes));
+
+        cls_score->referenceCount++;
+        reg_dist->referenceCount++;
+        cls_score_list->push_back(cls_score);
+        reg_dist_list->push_back(reg_dist);
+    }
+    register_sublayer("global_avgpools", global_avgpools);
+
+    Tensor* scores;
+    Tensor* regs;
+    if (cls_score_list->size() =
