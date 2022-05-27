@@ -182,4 +182,63 @@ std::vector<Tensor*>* PPYOLOEHead::create_tensors(std::vector<Tensor*>* inputs, 
 
     Tensor* scores;
     Tensor* regs;
-    if (cls_score_list->size() =
+    if (cls_score_list->size() == 3)
+    {
+        scores = concat1->create_tensors(cls_score_list->at(0), cls_score_list->at(1), cls_score_list->at(2));
+        regs = concat2->create_tensors(reg_dist_list->at(0), reg_dist_list->at(1), reg_dist_list->at(2));
+    }
+
+    std::vector<Tensor*>* outs = output_tensors;
+    scores->referenceCount++;
+    regs->referenceCount++;
+    outs->push_back(scores);
+    outs->push_back(regs);
+    return outs;
+}
+
+std::vector<Tensor*>* PPYOLOEHead::feed_forward(std::vector<Tensor*>* inputs, char miemie2013)
+{
+    std::vector<Tensor*>* cls_score_list = temp_tensors;
+    std::vector<Tensor*>* reg_dist_list = temp2_tensors;
+    int gap_id = 0;
+    for (int i = 0; i < inputs->size(); i++)
+    {
+        Tensor* feat = inputs->at(i);
+        Layer* reduce = global_avgpools->at(gap_id++);
+        Tensor* avg_feat = reduce->feed_forward(feat);
+
+        Tensor* cls_score = stem_cls->at(i)->feed_forward(feat, avg_feat);
+        miemienet::functional::elementwise(cls_score, feat, cls_score, ELE_ADD);
+        cls_score = pred_cls->at(i)->feed_forward(cls_score);
+        miemienet::functional::activation(cls_score, cls_score, "sigmoid", 0.f);
+
+        Tensor* reg_feat = stem_reg->at(i)->feed_forward(feat, avg_feat);
+        reg_feat = pred_reg->at(i)->feed_forward(reg_feat);
+
+        const int N = reg_feat->shape->at(0);
+        reg_feat->reshape(MMSHAPE4D(N, -1, 4, reg_max + 1));
+        miemienet::functional::softmax(reg_feat, reg_feat, -1);
+
+        Tensor* reg_dist = proj_conv->feed_forward(reg_feat);
+        reg_dist->reshape(MMSHAPE3D(N, -1, 4));
+        cls_score->reshape(MMSHAPE3D(N, -1, num_classes));
+
+//        cls_score_list->push_back(cls_score);
+//        reg_dist_list->push_back(reg_dist);
+    }
+
+    Tensor* scores;
+    Tensor* regs;
+    if (cls_score_list->size() == 3)
+    {
+        scores = concat1->feed_forward(cls_score_list->at(0), cls_score_list->at(1), cls_score_list->at(2));
+        regs = concat2->feed_forward(reg_dist_list->at(0), reg_dist_list->at(1), reg_dist_list->at(2));
+    }
+
+    std::vector<Tensor*>* outs = output_tensors;
+//    outs->push_back(scores);
+//    outs->push_back(regs);
+    return outs;
+}
+
+}  // namespace miemiedet
