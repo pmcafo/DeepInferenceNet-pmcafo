@@ -48,4 +48,12 @@ public:
     Tensor* create_parameter(char* name, std::vector<int>* shape, int dtype, bool init, float init_value=0.f);
     void parameters(std::vector<Tensor*>* params);
     void named_parameters(std::vector<char*>* param_names, std::vector<Tensor*>* params, char* prefix=nullptr);
-    void load_state_dict(char* name, ch
+    void load_state_dict(char* name, char* param_prefix_name=nullptr);
+private:
+    std::vector<Layer*> sublayers;
+    std::vector<char*> sublayer_names;
+};
+
+NS_MM_END
+
+#endif // __LAYER_H__
