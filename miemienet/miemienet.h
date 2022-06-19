@@ -44,4 +44,13 @@
 #include "nn/common/maxpool2d_common.h"
 #include "nn/common/reduce_common.h"
 #include "nn/common/softmax_common.h"
-#
+#include "nn/common/transpose_common.h"
+#endif // BACKEND_ARM
+
+NS_MM_BEGIN
+
+const char* miemienetVersion();
+
+NS_MM_END
+
+#endif // __MIEMIENET_H__
