@@ -59,4 +59,42 @@
 #define TRANS3D_120 5
 #define TRANS3D_201 6
 #define TRANS3D_210 7
-#define 
+#define TRANS4D_0123 8
+#define TRANS4D_0132 9
+#define TRANS4D_0213 10
+#define TRANS4D_0231 11
+#define TRANS4D_0312 12
+#define TRANS4D_0321 13
+#define TRANS4D_1023 14
+#define TRANS4D_1032 15
+#define TRANS4D_1203 16
+#define TRANS4D_1230 17
+#define TRANS4D_1302 18
+#define TRANS4D_1320 19
+#define TRANS4D_2013 20
+#define TRANS4D_2031 21
+#define TRANS4D_2103 22
+#define TRANS4D_2130 23
+#define TRANS4D_2301 24
+#define TRANS4D_2310 25
+#define TRANS4D_3012 26
+#define TRANS4D_3021 27
+#define TRANS4D_3102 28
+#define TRANS4D_3120 29
+#define TRANS4D_3201 30
+#define TRANS4D_3210 31
+
+
+#define DEBUG
+
+#define FCI                             FC::getInstance()
+
+#define MMSHAPE1D(a)                    new std::vector<int>({a})
+#define MMSHAPE2D(a, b)                 new std::vector<int>({a, b})
+#define MMSHAPE3D(a, b, c)              new std::vector<int>({a, b, c})
+#define MMSHAPE4D(a, b, c, d)           new std::vector<int>({a, b, c, d})
+#define MMSHAPE5D(a, b, c, d, e)        new std::vector<int>({a, b, c, d, e})
+#define MMSHAPE6D(a, b, c, d, e, f)     new std::vector<int>({a, b, c, d, e, f})
+#define MMSHAPE7D(a, b, c, d, e, f, g)  new std::vector<int>({a, b, c, d, e, f, g})
+
+#endif // __MACROS_H__
