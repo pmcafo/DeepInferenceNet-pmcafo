@@ -20,4 +20,17 @@ public:
 private:
     MemoryAllocator();
     ~MemoryAllocator();
-    static MemoryAl
+    static MemoryAllocator* s_singleInstance;
+    float* mem_fp32;
+    int* mem_int32;
+    int offset_fp32;
+    int offset_int32;
+//    std::vector<float*> datas_fp32;
+//    std::vector<int*> datas_int32;
+//    std::vector<int> datas_id_fp32;
+//    std::vector<int> datas_id_int32;
+};
+
+NS_MM_END
+
+#endif // __MEMORYALLOCATOR_H__
