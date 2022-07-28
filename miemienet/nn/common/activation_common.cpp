@@ -161,4 +161,73 @@ void tanh_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num
 
 template<typename data_t>
 void tanh_grad_cpp_kernel(const int num_threads_, const data_t* dy, const data_t* y, data_t* dx, int num){
-    #pragma omp parallel for num_threa
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        dx[i] = dy[i] * (1 - y[i] * y[i]);
+    }
+}
+
+template<typename data_t>
+void mish_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        // y1 = ln(1+e^x)
+        // y2 = tanh(y1)
+        // y = mish(x) = x * y2 = x * tanh(ln(1+e^x))
+        y[i] = x[i] * tanhf(logf(1.f + expf(x[i])));
+    }
+}
+
+// from https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/operators/mish_op.cu   KeMishBwFP32()
+template<typename data_t>
+void mish_grad_cpp_kernel(const int num_threads_, const data_t* dy, const data_t* x, data_t* dx, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        float sp = logf(1.f + expf(x[i]));
+        float tsp = tanhf(sp);
+        float grad_sp = -expm1f(-sp);
+        float grad_tsp = (static_cast<float>(1) - tsp * tsp) * grad_sp;
+        dx[i] = dy[i] * (x[i] * grad_tsp + tsp);
+    }
+}
+
+template<typename data_t>
+void swish_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        y[i] = static_cast<float>(x[i] / (1.f + expf(-x[i])));
+    }
+}
+
+
+template<typename data_t>
+void swish_x86_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+#if defined(WINDOWS)
+    const int elempack = 8;
+    const int num_packs = num / elempack;
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int pid = 0; pid < num_packs; pid++) {
+        const float* x_ptr = x + pid * elempack;
+        float* y_ptr = y + pid * elempack;
+        __m256 _x = _mm256_loadu_ps(x_ptr);
+        __m256 one = _mm256_set1_ps(1.0f);
+        __m256 _y = _mm256_div_ps(_x, _mm256_add_ps(one, _mm256_exp_ps(_mm256_sub_ps(_mm256_setzero_ps(), _x))));
+        _mm256_storeu_ps(y_ptr, _y);
+    }
+    int offset_ = num_packs * elempack;
+    if (num - offset_ >= 4)
+    {
+        const float* x_ptr = x + offset_;
+        float* y_ptr = y + offset_;
+        __m128 _x = _mm_load_ps(x_ptr);
+        __m128 one = _mm_set1_ps(1.0f);
+        __m128 _y = _mm_div_ps(_x, _mm_add_ps(one, _mm_exp_ps(_mm_sub_ps(_mm_setzero_ps(), _x))));
+        _mm_store_ps(y_ptr, _x);
+        offset_ += 4;
+    }
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = offset_; i < num; i++) {
+        y[i] = static_cast<float>(x[i] / (1.f + expf(-x[i])));
+    }
+#endif
+#if defined(
