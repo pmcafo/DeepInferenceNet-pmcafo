@@ -230,4 +230,95 @@ void swish_x86_kernel(const int num_threads_, const data_t* x, data_t* y, int nu
         y[i] = static_cast<float>(x[i] / (1.f + expf(-x[i])));
     }
 #endif
-#if defined(
+#if defined(LINUX)
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        y[i] = static_cast<float>(x[i] / (1.f + expf(-x[i])));
+    }
+#endif
+}
+
+template<typename data_t>
+void swish_grad_cpp_kernel(const int num_threads_, const data_t* dy, const data_t* y, const data_t* x, data_t* dx, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        dx[i] = dy[i] * (y[i] + (1.f - y[i]) / (1.f + expf(-x[i])));
+    }
+}
+
+template<typename data_t>
+void hardsigmoid_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        if (x[i] > static_cast<data_t>(3.f))
+        {
+            y[i] = 1.f;
+        }
+        else if (x[i] < static_cast<data_t>(-3.f))
+        {
+            y[i] = 0.f;
+        }
+        else
+        {
+            y[i] = x[i] / 6.f + 0.5f;
+        }
+    }
+}
+
+template<typename data_t>
+void hardswish_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        if (x[i] > static_cast<data_t>(3.f))
+        {
+            y[i] = x[i];
+        }
+        else if (x[i] < static_cast<data_t>(-3.f))
+        {
+            y[i] = 0.f;
+        }
+        else
+        {
+            y[i] = x[i] * (x[i] + 3.f) / 6.f;
+        }
+    }
+}
+
+template<typename data_t>
+void exp_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        y[i] = static_cast<float>(expf(x[i]));
+    }
+}
+
+template<typename data_t>
+void square_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        y[i] = x[i] * x[i];
+    }
+}
+
+template<typename data_t>
+void sqrt_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, float eps, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        y[i] = static_cast<float>(sqrtf(x[i] + eps));
+    }
+}
+
+template<typename data_t>
+void rsqrt_cpp_kernel(const int num_threads_, const data_t* x, data_t* y, int num){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int i = 0; i < num; i++) {
+        y[i] = static_cast<float>(1.f / sqrtf(x[i]));
+    }
+}
+
+
+
+void activation(Tensor* input, Tensor* output, char* type, float alpha)
+{
+    Config* cfg = Config::getInstance();
+    const int num_threads_ = cfg
