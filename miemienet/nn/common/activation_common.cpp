@@ -390,3 +390,58 @@ void activation(Tensor* input, Tensor* output, char* type, float alpha)
         }
         else if (strcmp(type, "relu") == 0)
         {
+            relu_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "sigmoid") == 0)
+        {
+            sigmoid_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "tanh") == 0)
+        {
+            tanh_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "mish") == 0)
+        {
+            mish_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "swish") == 0)
+        {
+            swish_x86_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "hardsigmoid") == 0)
+        {
+            hardsigmoid_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "hardswish") == 0)
+        {
+            hardswish_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "exp") == 0)
+        {
+            exp_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "square") == 0)
+        {
+            square_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else if (strcmp(type, "sqrt") == 0)
+        {
+            sqrt_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, alpha, input->numel);
+        }
+        else if (strcmp(type, "rsqrt") == 0)
+        {
+            rsqrt_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, input->numel);
+        }
+        else
+        {
+            printf("Activation type \'%s\' not implemented!\n", type);
+            exit(1);
+        }
+#endif // BACKEND_X86
+
+#if BACKEND_ARM
+#endif // BACKEND_ARM
+    }
+}
+
+NS_MM_F_END
