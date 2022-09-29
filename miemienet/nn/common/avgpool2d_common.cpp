@@ -130,4 +130,12 @@ void avgpool2d(Tensor* input, Tensor* output, int kernel_h, int kernel_w, int st
 
     if (cfg->image_data_format == NCHW)
     {
-        avgpool2d_NCHW_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, output->numel, N, out_H, out_W, C, kernel_h, kernel_w, H, W, stride_h, stride_w, p
+        avgpool2d_NCHW_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, output->numel, N, out_H, out_W, C, kernel_h, kernel_w, H, W, stride_h, stride_w, padding_h, padding_w);
+    }
+    else if (cfg->image_data_format == NHWC)
+    {
+        avgpool2d_NHWC_cpp_kernel<float>(num_threads_, input->data_fp32, output->data_fp32, output->numel, N, out_H, out_W, C, kernel_h, kernel_w, H, W, stride_h, stride_w, padding_h, padding_w);
+    }
+}
+
+NS_MM_F_END
