@@ -54,4 +54,77 @@ void concat4d_4tensor_dim3_cpp_kernel(const int num_threads_, const data_t* tens
                 for (int w4 = 0; w4 < W4; w4++) {
                     out[((n * C + c) * H + h) * (W1 + W2 + W3 + W4) + w4 + W1 + W2 + W3] = tensor4[((n * C + c) * H + h) * W4 + w4];
                 }
-       
+            }
+        }
+    }
+}
+
+
+template<typename data_t>
+void concat3d_3tensor_dim1_cpp_kernel(const int num_threads_, const data_t* tensor1, const data_t* tensor2, const data_t* tensor3, data_t* out, int num, int N, int H1, int H2, int H3, int W){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int h = 0; h < H1 + H2 + H3; h++) {
+            if (h < H1)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3) + h) * W + w] = tensor1[(n * H1 + h) * W + w];
+                }
+            }
+            else if (h < H1 + H2)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3) + h) * W + w] = tensor2[(n * H2 + h - H1) * W + w];
+                }
+            }
+            else if (h < H1 + H2 + H3)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3) + h) * W + w] = tensor3[(n * H3 + h - H1 - H2) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void concat3d_4tensor_dim1_cpp_kernel(const int num_threads_, const data_t* tensor1, const data_t* tensor2, const data_t* tensor3, const data_t* tensor4, data_t* out, int num, int N, int H1, int H2, int H3, int H4, int W){
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int h = 0; h < H1 + H2 + H3 + H4; h++) {
+            if (h < H1)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3 + H4) + h) * W + w] = tensor1[(n * H1 + h) * W + w];
+                }
+            }
+            else if (h < H1 + H2)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3 + H4) + h) * W + w] = tensor2[(n * H2 + h - H1) * W + w];
+                }
+            }
+            else if (h < H1 + H2 + H3)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3 + H4) + h) * W + w] = tensor3[(n * H3 + h - H1 - H2) * W + w];
+                }
+            }
+            else if (h < H1 + H2 + H3 + H4)
+            {
+                for (int w = 0; w < W; w++) {
+                    out[(n * (H1 + H2 + H3 + H4) + h) * W + w] = tensor3[(n * H4 + h - H1 - H2 - H3) * W + w];
+                }
+            }
+        }
+    }
+}
+
+
+void concat(Tensor* input1, Tensor* input2, Tensor* output, int dim)
+{
+    Config* cfg = Config::getInstance();
+    const int num_threads_ = cfg->num_threads;
+
+    const int dims = input1->dims;
+ 
