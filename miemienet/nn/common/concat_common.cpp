@@ -127,4 +127,87 @@ void concat(Tensor* input1, Tensor* input2, Tensor* output, int dim)
     const int num_threads_ = cfg->num_threads;
 
     const int dims = input1->dims;
- 
+    int positive_dim = dim < 0 ? dims + dim : dim;
+
+    if (cfg->use_cpp_compute)
+    {
+        if (dims == 4 && positive_dim == 3)
+        {
+            const int N = input1->shape->at(0);
+            const int C = input1->shape->at(1);
+            const int H = input1->shape->at(2);
+            const int W1 = input1->shape->at(3);
+            const int W2 = input2->shape->at(3);
+            concat4d_2tensor_dim3_cpp_kernel<float>(num_threads_, input1->data_fp32, input2->data_fp32, output->data_fp32, output->numel, N, C, H, W1, W2);
+        }
+        else
+        {
+            printf("concat op type dims == %d && dim == %d not implemented!\n", dims, dim);
+            exit(1);
+        }
+    }
+    else
+    {
+#if BACKEND_X86
+#endif // BACKEND_X86
+
+#if BACKEND_ARM
+#endif // BACKEND_ARM
+    }
+}
+
+void concat(Tensor* input1, Tensor* input2, Tensor* input3, Tensor* output, int dim)
+{
+    Config* cfg = Config::getInstance();
+    const int num_threads_ = cfg->num_threads;
+
+    const int dims = input1->dims;
+    int positive_dim = dim < 0 ? dims + dim : dim;
+
+    if (cfg->use_cpp_compute)
+    {
+        if (dims == 3 && positive_dim == 1)
+        {
+            const int N = input1->shape->at(0);
+            const int H1 = input1->shape->at(1);
+            const int H2 = input2->shape->at(1);
+            const int H3 = input3->shape->at(1);
+            const int W = input1->shape->at(2);
+            concat3d_3tensor_dim1_cpp_kernel<float>(num_threads_, input1->data_fp32, input2->data_fp32, input3->data_fp32, output->data_fp32, output->numel, N, H1, H2, H3, W);
+        }
+        else
+        {
+            printf("concat op type dims == %d && dim == %d not implemented!\n", dims, dim);
+            exit(1);
+        }
+    }
+    else
+    {
+#if BACKEND_X86
+#endif // BACKEND_X86
+
+#if BACKEND_ARM
+#endif // BACKEND_ARM
+    }
+}
+
+void concat(Tensor* input1, Tensor* input2, Tensor* input3, Tensor* input4, Tensor* output, int dim)
+{
+    Config* cfg = Config::getInstance();
+    const int num_threads_ = cfg->num_threads;
+
+    const int dims = input1->dims;
+    int positive_dim = dim < 0 ? dims + dim : dim;
+
+    if (cfg->use_cpp_compute)
+    {
+        if (dims == 4 && positive_dim == 3)
+        {
+            const int N = input1->shape->at(0);
+            const int C = input1->shape->at(1);
+            const int H = input1->shape->at(2);
+            const int W1 = input1->shape->at(3);
+            const int W2 = input2->shape->at(3);
+            const int W3 = input3->shape->at(3);
+            const int W4 = input4->shape->at(3);
+            concat4d_4tensor_dim3_cpp_kernel<float>(num_threads_, input1->data_fp32, input2-
