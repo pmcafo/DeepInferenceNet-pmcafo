@@ -8143,3 +8143,2509 @@ void elem4d_1C1W_mul_111W_x86_kernel(const int num_threads_, const data_t* x, co
             for (int h = 0; h < H; h++) {
                 for (int w = 0; w < W; w++) {
                     z[c * W + w] = x[c * W + w] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_mul_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * W + w] * y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_mul_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c * W + w] * y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_mul_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c * W + w] * y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] * y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] * y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] * y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] * y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] * y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] * y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_mul_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] * y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_N11W_mul_N11W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[n * W + w] = x[n * W + w] * y[n * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_N11W_mul_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[n * W + w] = x[n * W + w] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[w] * y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[w] * y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[w] * y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[w] * y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = x[w] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[w] * y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[w] * y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_mul_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = x[w] * y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h] * y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h] * y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h] * y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[h] * y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = x[h] * y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[h] * y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_mul_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = x[h] * y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c] * y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c] * y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c] * y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c] * y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c] * y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = x[c] * y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_mul_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = x[c] * y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[0] * y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[0] * y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[0] * y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[0] * y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = x[0] * y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = x[0] * y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = x[0] * y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_mul_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[0] = x[0] * y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_NCHW_div_NCHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[((n * C + c) * H + h) * W + w] = x[((n * C + c) * H + h) * W + w] / y[((n * C + c) * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_NCHW_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[((n * C + c) * H + h) * W + w] = x[((n * C + c) * H + h) * W + w] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_NCHW_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[((n * C + c) * H + h) * W + w] = x[((n * C + c) * H + h) * W + w] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[(c * H + h) * W + w] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h * W + w] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h * W + w] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h * W + w] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h * W + w] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h * W + w] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h * W + w] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h * W + w] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h * W + w] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * W + w] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * W + w] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c * W + w] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * W + w] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c * W + w] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * W + w] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c * W + w] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c * W + w] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c * H + h] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c * H + h] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_N11W_div_N11W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[n * W + w] = x[n * W + w] / y[n * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_N11W_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[n * W + w] = x[n * W + w] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[w] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[w] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[w] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[w] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = x[w] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[w] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[w] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = x[w] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[h] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[h] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[h] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = x[h] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[h] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = x[h] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[c] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[c] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[c] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = x[c] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = x[c] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = x[0] / y[(c * H + h) * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = x[0] / y[h * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = x[0] / y[c * W + w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = x[0] / y[c * H + h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = x[0] / y[w];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = x[0] / y[h];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = x[0] / y[c];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_div_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[0] = x[0] / y[0];
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_NCHW_min_NCHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[((n * C + c) * H + h) * W + w] = std::min(x[((n * C + c) * H + h) * W + w], y[((n * C + c) * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_NCHW_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[((n * C + c) * H + h) * W + w] = std::min(x[((n * C + c) * H + h) * W + w], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_NCHW_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[((n * C + c) * H + h) * W + w] = std::min(x[((n * C + c) * H + h) * W + w], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CHW_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[(c * H + h) * W + w], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[h * W + w], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[h * W + w], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[h * W + w], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[h * W + w], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[h * W + w], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[h * W + w], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[h * W + w], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11HW_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[h * W + w], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * W + w], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * W + w], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[c * W + w], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * W + w], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[c * W + w], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * W + w], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[c * W + w], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C1W_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[c * W + w], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * H + h], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * H + h], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * H + h], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[c * H + h], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c * H + h], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[c * H + h], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[c * H + h], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1CH1_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[c * H + h], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_N11W_min_N11W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[n * W + w] = std::min(x[n * W + w], y[n * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_N11W_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[n * W + w] = std::min(x[n * W + w], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[w], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[w], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[w], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[w], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = std::min(x[w], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[w], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[w], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_111W_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[w] = std::min(x[w], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[h], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[h], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[h], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[h], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[h], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = std::min(x[h], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[h], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_11H1_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h] = std::min(x[h], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[c], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[c], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[c], y[c * H + h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_111W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[c], y[w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_11H1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[c], y[h]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_1C11_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = std::min(x[c], y[c]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1C11_min_1111_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c] = std::min(x[c], y[0]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_min_1CHW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[(c * H + h) * W + w] = std::min(x[0], y[(c * H + h) * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_min_11HW_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[h * W + w] = std::min(x[0], y[h * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_min_1C1W_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * W + w] = std::min(x[0], y[c * W + w]);
+                }
+            }
+        }
+    }
+}
+
+template<typename data_t>
+void elem4d_1111_min_1CH1_x86_kernel(const int num_threads_, const data_t* x, const data_t* y, data_t* z, int num, int N, int C, int H, int W) {
+    #pragma omp parallel for num_threads(num_threads_)
+    for (int n = 0; n < N; n++) {
+        for (int c = 0; c < C; c++) {
+            for (int h = 0; h < H; h++) {
+                for (int w = 0; w < W; w++) {
+                    z[c * H + h] = std::min(x[0], y[c * H + h]);
