@@ -13177,3 +13177,1190 @@ op_type类型的宏定义见macros.h
             }
             else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
                 elem4d_111W_add_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_add_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_add_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_add_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_add_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_add_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_add_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_add_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_add_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_add_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_add_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_add_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_add_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_add_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_add_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_add_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_add_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_add_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_add_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_add_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_add_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_add_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_add_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_add_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_add_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_add_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_add_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_add_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else {
+                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\n", N0, C0, H0, W0, N1, C1, H1, W1);
+                exit(1);
+            }
+        }
+        else if (op_type == ELE_SUB) {
+            if (N0 == N1 && N1 > 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_sub_NCHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_NCHW_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == N1 && N1 > 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_sub_N11W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_sub_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_sub_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_sub_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_sub_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_sub_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_sub_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_sub_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_sub_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else {
+                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\n", N0, C0, H0, W0, N1, C1, H1, W1);
+                exit(1);
+            }
+        }
+        else if (op_type == ELE_MUL) {
+            if (N0 == N1 && N1 > 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_mul_NCHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_NCHW_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == N1 && N1 > 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_mul_N11W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_mul_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_mul_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_mul_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_mul_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_mul_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_mul_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_mul_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_mul_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else {
+                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\n", N0, C0, H0, W0, N1, C1, H1, W1);
+                exit(1);
+            }
+        }
+        else if (op_type == ELE_DIV) {
+            if (N0 == N1 && N1 > 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_div_NCHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_NCHW_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == N1 && N1 > 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_div_N11W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_div_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_div_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_div_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_div_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_div_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_div_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_div_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_div_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else {
+                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\n", N0, C0, H0, W0, N1, C1, H1, W1);
+                exit(1);
+            }
+        }
+        else if (op_type == ELE_MIN) {
+            if (N0 == N1 && N1 > 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_min_NCHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_NCHW_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == N1 && N1 > 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_min_N11W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_min_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_min_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_min_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_min_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_min_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_min_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_min_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_min_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else {
+                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\n", N0, C0, H0, W0, N1, C1, H1, W1);
+                exit(1);
+            }
+        }
+        else if (op_type == ELE_MAX) {
+            if (N0 == N1 && N1 > 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_max_NCHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_NCHW_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_NCHW_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1CHW_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1CHW_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_11HW_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_11HW_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_1C1W_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_1C1W_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1CH1_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1CH1_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == N1 && N1 > 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_max_N11W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 > 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_N11W_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == W1 && W1 > 1) {
+                elem4d_111W_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 > 1 && W1 == 1) {
+                elem4d_111W_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_11H1_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == H1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 > 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_11H1_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1C11_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == C1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 > 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1C11_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_max_1CHW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_max_11HW_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_max_1C1W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_max_1CH1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 > 1) {
+                elem4d_1111_max_111W_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 > 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_max_11H1_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 > 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_max_1C11_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else if (N0 == 1 && N1 == 1 && C0 == 1 && C1 == 1 && H0 == 1 && H1 == 1 && W0 == 1 && W1 == 1) {
+                elem4d_1111_max_1111_x86_kernel<float>(num_threads_, a->data_fp32, b->data_fp32, out->data_fp32, out->numel, N, C, H, W);
+            }
+            else {
+                printf("Error from elementwise op, (%d, %d, %d, %d) op (%d, %d, %d, %d) not implemented!\n", N0, C0, H0, W0, N1, C1, H1, W1);
+                exit(1);
+            }
+        }
+#endif // BACKEND_X86
+// gen x86 invoke code end
+    }
+
+
+    if (dims == 3)
+    {
+        a->squeeze(0);
+        b->squeeze(0);
+        out->squeeze(0);
+    }
+    else if (dims == 2)
+    {
+        a->squeeze(0);
+        a->squeeze(0);
+        b->squeeze(0);
+        b->squeeze(0);
+        out->squeeze(0);
+        out->squeeze(0);
+    }
+    else if (dims == 1)
+    {
+        a->squeeze(0);
+        a->squeeze(0);
+        a->squeeze(0);
+        b->squeeze(0);
+        b->squeeze(0);
+        b->squeeze(0);
+        out->squeeze(0);
+        out->squeeze(0);
+        out->squeeze(0);
+    }
+}
+
+NS_MM_F_END
