@@ -84,3 +84,12 @@ op_type类型的宏定义见macros.h
     }
     else
     {
+#if BACKEND_X86
+#endif // BACKEND_X86
+
+#if BACKEND_ARM
+#endif // BACKEND_ARM
+    }
+}
+
+NS_MM_F_END
