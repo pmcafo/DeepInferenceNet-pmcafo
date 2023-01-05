@@ -1,0 +1,78 @@
+
+
+pycharm ide, File | Settings | Editor | File Types
+在C/C++一栏加入
+*.cu
+*.cuh
+
+就能让 *.cu *.cuh 代码高亮了！
+
+
+------------------------------ Cmake众多名字 ------------------------------
+
+project(mm2ncnn)
+第一个参数是VS解决方案的名字 即xxx.sln
+
+add_executable(main ${SRCS})
+第一个参数是可执行文件的文件名 即xxx.vcxproj、xxx.exe
+
+------------------------------ (end) ------------------------------
+
+
+
+------------------------------ TO DO ------------------------------
+锁层训练：
+只要设置可训练权重的requires_grad为false，即可锁（冻结）权重训练。
+
+当输入张量经过的前n个层都锁住时，建议前面n层的create_graph设置为false，且第n个层的输出张量的requires_grad为false，
+这样前向传播时就不会新建XxxGrad层对象，不记录不建立前n层的反向层，提高训练效率。
+
+锁住某个层和其子层的权重，建议使用Layer类的requires_grad_(bool)函数(和torch.nn.Module的requires_grad_(bool)函数一样)，
+这个函数会设置这个层和其子层的权重的requires_grad为指定的布尔值。但是不能设置
+
+GAN的生成器和判别器实际上也可以看成是1个网络，因为输入张量经过生成器和判别器时，只产生1个计算图，
+或者说生成器和判别器的计算图是连通的。GAN就是交替锁住生成器和判别器进行训练的。
+
+
+彻底完成卷积层和全连接层权重初始化。bn层权重初始化已经完全正确。init.cu加入各种初始化方法。
+
+------------------------------ (end) ------------------------------
+
+
+------------------------------ Paddle自定义外部算子 ------------------------------
+
+https://github.com/PaddlePaddle/Paddle/issues/40800
+
+https://github.com/PaddlePaddle/Paddle/pull/40963
+
+tensor类
+https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/framework/tensor.h
+
+可变形卷积
+https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/operators/deformable_conv_op.h
+
+全连接层
+https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/operators/matmul_v2_op.h
+
+https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/operators/matmul_v2_op.cu
+
+reduce_sum层
+https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/operators/reduce_ops/cub_reduce.h
+
+
+BN层
+https://gitee.com/paddlepaddle/Paddle/blob/release/2.0/paddle/fluid/operators/batch_norm_op.cu
+计算均值方差用welford算法
+
+
+不可以在cuda代码里使用std::string，否则链接错误：
+error LNK2019: 无法解析的外部符号 "public: __cdecl miemienet::Tensor<float>::Tensor<float>(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,bool)"
+
+
+Tensor类构造函数参数编译报错：
+redefinition of default parameter
+在Tensor类头文件，构造函数声明中设置默认值，在构造函数实现部分，应该把默认值去掉。
+
+
+
+src/nn/functional/目录下*.cuh头文件没有对应的*.cu文件，当你需要调用例如 NS_MM_F::matmul(x, y); 时，需要在当前
