@@ -75,4 +75,98 @@ redefinition of default parameter
 
 
 
-src/nn/functional/目录下*.cuh头文件没有对应的*.cu文件，当你需要调用例如 NS_MM_F::matmul(x, y); 时，需要在当前
+src/nn/functional/目录下*.cuh头文件没有对应的*.cu文件，当你需要调用例如 NS_MM_F::matmul(x, y); 时，需要在当前源码文件开头加上
+#include "nn/functional/matmul.cuh"
+之类的明文引用include。
+matmul.cuh里依赖Tensor，但是不需要包含tensor.h，因为其他源码文件已经包含过了。
+
+
+miemienet设计的一些约定：
+所有神经网络前向操作(比如reshape, permute, torch.sigmoid, F.relu等)都需要新建1个Layer对象，再调用Layer对象的前向函数完成。
+因为miemienet使用图记录神经网络的前向传播，Tensor是节点，Layer是边，Layer负责连接节点的关系，所以必须要新建Layer，不能直接调用
+Tensor* z = NS_MM_F::matmul(x, y);
+不能直接调用nn/functional/下的api来建立神经网络训练。
+
+
+
+
+C++在for循环里不停地new对象，
+    for (int batch_idx = 0; batch_idx < 99999999; batch_idx++)
+    {
+        Tensor* x = new SNT Tensor(x_shape, Tensor::DTYPE::FP32, true, false, false);
+        ...
+        delete x;
+    }
+在最后一定要手动delete, 否则内存爆炸。
+每一个step结束后应该是否掉不是权重的张量，释放掉梯度层，某些id置0
+Tensor类（其它类也是）的析构函数要保证释放掉所有它的指针成员;
+XxxGrad类是Xxx类的反向层，XxxGrad类的析构函数不要释放掉权重指针;
+    Tensor* weight;
+    Tensor* bias;
+因为这些权重指针是指向Xxx类的权重的，应该归Xxx类管理。（理论上只要程序在运行，
+不管训练阶段还是推理阶段，这些权重应该一直都在，不需要释放）
+
+
+全连接层反向传播后，x, w形状会发生改变(reshape)，要reshape回原来的形状。
+
+
+loss->backward(); 时，反向传播。实际上是新建立一个计算图，这个计算图的前向时的计算图是不连通的！
+这个计算图的输入是dlossdloss，即一个形状与loss相同，但值全是1的张量(即loss->grad)。
+这就是为什么LinearGrad类只有名为forward的函数，没有名为backward的函数的原因。
+前向图的建立是从输入张量传入网络第一个层开始的，反向图的建立是从loss->backward()函数内部开始的。两个图是不连通的。
+
+不再建立这个层的反向层。
+
+
+
+Tensor::backward()方法中，
+        LinearGrad* glayer = (LinearGrad*)grad_layer;
+        glayer->create_graph = false;   // loss->backward(); 时，不再建立这个层的反向层。
+        Tensor* dydx = glayer->forward(this->grad);
+        delete glayer;
+当计算完了dydx，释放反向层的内存，只要delete 子指针 或 父指针 即可。不可以同时delete 子指针 和 父指针
+https://www.zhihu.com/question/412137391
+如何判断该指针是否已经释放？再主动delete一次，崩了就说明已经释放。
+
+
+Tensor::backward()方法中，
+    std::vector<int>* grad_shape = new std::vector<int>;
+    for (int i = 0; i < this->shape->size(); i++)
+    {
+        grad_shape->push_back(this->shape->at(i));
+    }
+    this->grad = new SNT Tensor(grad_shape, FP32, false);
+新建梯度张量时，不能直接传this->shape，因为如果某处delete 这个张量的grad时，这个张量和这个张量的grad 共享的shape指针会被释放掉（析构函数中会释放shape指针），
+这个张量的shape指针就会是空指针，正确做法是给这个张量的grad 新new一个grad_shape指针对象。
+
+
+新增一个层：
+nn/cuda/xxx.cu
+nn/cuda/xxx.cuh
+nn/xxx.cpp
+nn/xxx.h
+miemienet.h 里添加 #include "nn/xxx.h"
+nn/function.cu 里添加相关函数实现
+nn/function.h  里添加相关函数声明
+添加测试用例
+
+
+------------------------------ (end) ------------------------------
+
+
+https://blog.csdn.net/seaun163/article/details/107629909/
+
+sudo gedit /usr/share/cmake-3.16/Modules/FindCUDA.cmake
+
+
+find /usr/local/cuda-11.1 -name *cublas_v2.h*
+
+
+(ubuntu)
+用下面CMake命令编译会报错。非常难解决，不建议使用cmake了。而是用build.py进行命令行编译。
+
+```
+  Could NOT find CUDA (missing: CUDA_INCLUDE_DIRS CUDA_CUDART_LIBRARY) (found
+  version "11.1")
+Call Stack (most recent call first):
+  /usr/share/cmake-3.16/Modules/FindPackageHandleS
