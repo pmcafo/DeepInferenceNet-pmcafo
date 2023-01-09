@@ -169,4 +169,90 @@ find /usr/local/cuda-11.1 -name *cublas_v2.h*
   Could NOT find CUDA (missing: CUDA_INCLUDE_DIRS CUDA_CUDART_LIBRARY) (found
   version "11.1")
 Call Stack (most recent call first):
-  /usr/share/cmake-3.16/Modules/FindPackageHandleS
+  /usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake:393 (_FPHSA_FAILURE_MESSAGE)
+  /usr/share/cmake-3.16/Modules/FindCUDA.cmake:1104 (find_package_handle_standard_args)
+  CMakeLists.txt:35 (find_package)
+```
+
+mkdir build
+
+cd build
+
+rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=Release ..
+
+rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=Release -DCUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-11.1 ..
+
+cmake --build . --config Release -j 2
+
+
+
+--     OpenCV_INSTALL_PATH: /usr
+--     OpenCV_VERSION: 4.2.0
+--     OpenCV_LIBS: opencv_core;opencv_highgui;opencv_imgproc;opencv_imgcodecs;opencv_videoio
+--     OpenCV_INCLUDE_DIRS: /usr/include/opencv4
+
+
+sudo find /usr -name *libopencv_core*
+
+sudo find /usr -name *libopencv_highgui*
+
+sudo find /usr -name *libopencv_imgcodecs*
+
+sudo find /usr -name *libopencv_imgproc*
+
+sudo find /usr -name *libopencv*
+
+sudo find /usr/local/cuda-11.1 -name *libcublas*
+
+
+
+build.py进行命令行编译:
+
+python build.py --platform LINUX --cxx g++ --backend BACKEND_X86 --exec_file test2_001_conv_mm_x86
+
+./test2_001_conv_mm_x86.out test/000000000019.jpg
+
+
+python build.py --platform LINUX --cxx g++ --backend BACKEND_X86 --exec_file test2_002_ppyoloe_mm_x86
+
+./test2_002_ppyoloe_mm_x86.out test/000000000019.jpg
+
+
+实现这几个：
+Softmax
+concat
+reduce
+Interp F.interpolate(route, scale_factor=2.)
+
+torch_code_2_miemienet_code.py
+像gen_code.py那样，将pytorch的代码转成miemienet的代码，比如
+
+class Res(nn.Module):
+    def __init__(self, in_features, out_features, kernel_size, stride, padding, bias=True):
+        super(Res, self).__init__()
+        self.fc = nn.Conv2d(in_features, out_features, kernel_size, stride, padding, bias=True)
+        torch.nn.init.normal_(self.fc.bias, 0., 1.)
+        self.act = nn.LeakyReLU(0.33)
+
+    def __call__(self, x):
+        y = self.fc(x)
+        y = self.act(y)
+        return y + x
+
+转成C++代码，变量类型可以先随便用个字符串(比如int)代替。
+
+
+
+error: ‘exit’ was not declared in this scope   解决：#include <stdlib.h>
+error: ‘malloc’ was not declared in this scope   解决：#include <stdlib.h>
+error: ‘memset’ was not declared in this scope   解决：#include <string.h>
+error: ‘strcpy’ was not declared in this scope   解决：#include <string.h>
+error: ‘FILE’ was not declared in this scope   解决：#include <cstdio>
+error: ‘fopen’ was not declared in this scope   解决：#include <cstdio>
+error: ‘find’ is not a member of ‘std’   解决：#include <iostream>
+error: no matching function for call to ‘find(std::vector<int>::iterator, std::vector<int>::iterator, int&)’   解决：#include <algorithm>
+是的，你没有看错，memset()在头文件<string.h>里。实际上memset()是以字符为单位初始化填充，所以理论上不能初始化单精度浮点型（4字节）
+
+大部分问题可以通过包含3个头文件解决：
+#include <stdio.h>
+#in
