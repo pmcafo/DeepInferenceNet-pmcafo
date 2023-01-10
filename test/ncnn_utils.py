@@ -386,4 +386,68 @@ def split_input_tensor(ncnn_data, bottom_names):
                 if not find:
                     ss = line.split()
                     in_num = int(ss[2])
-           
+                    out_num = int(ss[3])
+                    p = 4 + in_num
+                    for i2 in range(out_num):
+                        tensor_name = ss[p]
+                        if tensor_name == split_tensor_name:
+                            find = True
+                        p += 1
+                    new_lines.append(line)
+                    if find:
+                        # 马上在当前层的后面插入Split层
+                        layer = 'Split\tlayer_%.8d\t1 %d %s' % (layer_id, count, split_tensor_name)
+                        for ii in range(count):
+                            layer += ' %s_%.6d' % (split_tensor_name, ii)
+                        layer_id += 1
+                        tensor_id += count
+                        new_lines.append(layer)
+                else:
+                    # 输入张量是split_tensor_name的层，替换成Split层的每一个输出。
+                    ss = line.split()
+                    in_num = int(ss[2])
+                    out_num = int(ss[3])
+                    p = 4
+                    for i1 in range(in_num):
+                        tensor_name = ss[p]
+                        if tensor_name == split_tensor_name:
+                            ss[p] = '%s_%.6d' % (split_tensor_name, copy_i)
+                            copy_i += 1
+                        p += 1
+                    line2 = ''
+                    for kkk, s in enumerate(ss):
+                        if kkk == 0:
+                            line2 += s
+                        elif kkk == 1:
+                            line2 += '\t' + s
+                        elif kkk == 2:
+                            line2 += '\t' + s
+                        else:
+                            line2 += ' ' + s
+                    new_lines.append(line2)
+            lines = new_lines
+
+    pp = ''
+    for i, line in enumerate(lines):
+        pp += line + '\n'
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    bottom_names = rename_tensor(ncnn_data, bottom_names)
+    bottom_names = pretty_format(ncnn_data, bottom_names)
+    return bottom_names
+
+
+def conv2d(ncnn_data, bottom_names, conv, act_name=None, act_param_dict=None):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Convolution\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += ' 0=%d' % conv.out_channels
+    if len(conv.kernel_size) == 2:
+        pp += ' 1=%d' % conv.kernel_siz
