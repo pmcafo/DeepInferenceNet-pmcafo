@@ -255,4 +255,76 @@ error: no matching function for call to ‘find(std::vector<int>::iterator, std:
 
 大部分问题可以通过包含3个头文件解决：
 #include <stdio.h>
-#in
+#include <stdlib.h>
+#include <string.h>
+使用std::find()时：
+#include <iostream>
+#include <algorithm>
+
+
+
+//    const int num_threads = 12;
+//    std::vector<std::thread> threads;
+//    for (int tid = 0; tid < num_threads; tid++)
+//    {
+//        std::thread work_thread(im2col_kernel2, tid, num_threads, input->data_fp32, im2col->data_fp32, im2col->numel, N, out_H, out_W, in_C, kH, kW, H, W, stride_h, stride_w, padding_h, padding_w, dilation_h, dilation_w, groups);
+//        threads.push_back(work_thread);
+//    }
+//    for (int tid = 0; tid < num_threads; tid++)
+//    {
+//        threads.at(tid).join();
+//    }
+//        std::thread work_thread1(im2col_kernel2, 0, num_threads, input->data_fp32, im2col->data_fp32, im2col->numel, N, out_H, out_W, in_C, kH, kW, H, W, stride_h, stride_w, padding_h, padding_w, dilation_h, dilation_w, groups);
+//        std::thread work_thread2(im2col_kernel2, 1, num_threads, input->data_fp32, im2col->data_fp32, im2col->numel, N, out_H, out_W, in_C, kH, kW, H, W, stride_h, stride_w, padding_h, padding_w, dilation_h, dilation_w, groups);
+//        std::thread work_thread3(im2col_kernel2, 2, num_threads, input->data_fp32, im2col->data_fp32, im2col->numel, N, out_H, out_W, in_C, kH, kW, H, W, stride_h, stride_w, padding_h, padding_w, dilation_h, dilation_w, groups);
+//        std::thread work_thread4(im2col_kernel2, 3, num_threads, input->data_fp32, im2col->data_fp32, im2col->numel, N, out_H, out_W, in_C, kH, kW, H, W, stride_h, stride_w, padding_h, padding_w, dilation_h, dilation_w, groups);
+//        work_thread1.join();
+//        work_thread2.join();
+//        work_thread3.join();
+//        work_thread4.join();
+
+
+
+(win10)
+mkdir build
+
+cd build
+
+del CMakeCache.txt ; cmake -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=D://opencv/build .. ; cmake --build . --config Release -j 2
+
+./Release/for
+
+./Release/test_cuda
+
+./Release/test_graph ../res/images/000000000019.jpg
+
+
+del CMakeCache.txt ; cmake -DCMAKE_BUILD_TYPE=Release ..
+
+
+(或者)
+
+python build.py --platform WINDOWS --cxx g++ --backend BACKEND_X86 --exec_file test2_001_conv_mm_x86 --OpenCV_INCLUDE_DIRS D://opencv/build/include --OpenCV_LIBS D://opencv/build/x64/vc15/lib
+
+
+
+./for
+
+./test_cuda
+
+./test_graph res/images/000000000019.jpg
+
+
+
+./test2_001_conv_mm_x86 0.6 0.0 0.77 1
+
+
+./test2_001_conv_mm 0.6 0.0 0.77 1
+
+./test2_002_conv_mm 0.6 0.0 0.77 1
+
+
+VS常见命令行参数配置(xxx.vcxproj文件)：
+      <SDLCheck>false</SDLCheck>     使用sprintf()、fopen()、strcpy()这些函数不报错，而不是强制使用sprintf_s()、fopen_s()、strcpy_s()，不用被喂屎。
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    
