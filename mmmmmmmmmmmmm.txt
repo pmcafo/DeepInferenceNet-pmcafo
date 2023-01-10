@@ -327,4 +327,19 @@ python build.py --platform WINDOWS --cxx g++ --backend BACKEND_X86 --exec_file t
 VS常见命令行参数配置(xxx.vcxproj文件)：
       <SDLCheck>false</SDLCheck>     使用sprintf()、fopen()、strcpy()这些函数不报错，而不是强制使用sprintf_s()、fopen_s()、strcpy_s()，不用被喂屎。
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    
+      <ConformanceMode>false</ConformanceMode>
+      <AdditionalOptions>/D "WINDOWS" /D "BACKEND_X86" %(AdditionalOptions)</AdditionalOptions>   定义宏
+      <Optimization>MaxSpeed</Optimization>     优先优化代码的速度
+      <OpenMPSupport>true</OpenMPSupport>       支持OpenMP多线程
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>      编译时不检查没有初始化的指针，不用被喂屎。
+
+C++ 无法从“const char [ ]”转换为“char *”
+在项目属性中 ，把符合模式更改为 ‘否’
+
+
+把x64/Release 里的 miemienet.exe 复制到项目根目录
+./miemienet.exe test/000000000019.jpg
+
+
+
+
