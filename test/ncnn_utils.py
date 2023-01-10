@@ -301,4 +301,89 @@ def rename_tensor(ncnn_data, bottom_names):
             if tensor_name not in tensors_dic.keys():
                 aaaaaaaaaa = 'tensor_%.8d' % (tensor_id, )
                 tensor_id += 1
-     
+                tensors_dic[tensor_name] = aaaaaaaaaa
+            p += 1
+        for i2 in range(out_num):
+            tensor_name = ss[p]
+            if tensor_name not in tensors_dic.keys():
+                aaaaaaaaaa = 'tensor_%.8d' % (tensor_id, )
+                tensor_id += 1
+                tensors_dic[tensor_name] = aaaaaaaaaa
+            p += 1
+    content = ''
+    for i, line in enumerate(lines):
+        ss = line.split()
+        in_num = int(ss[2])
+        out_num = int(ss[3])
+        p = 4 + in_num + out_num - 1
+        for i1 in range(in_num):
+            tensor_name = ss[p]
+            ss[p] = tensors_dic[tensor_name]
+            p -= 1
+        for i2 in range(out_num):
+            tensor_name = ss[p]
+            ss[p] = tensors_dic[tensor_name]
+            p -= 1
+        line2 = ''
+        for kkk, s in enumerate(ss):
+            if kkk == 0:
+                line2 += s
+            elif kkk == 1:
+                line2 += '\t' + s
+            elif kkk == 2:
+                line2 += '\t' + s
+            else:
+                line2 += ' ' + s
+        content += line2 + '\n'
+    pp = content
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    new_bottom_names = []
+    for bname in bottom_names:
+        new_bottom_names.append(tensors_dic[bname])
+    return new_bottom_names
+
+
+def split_input_tensor(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    lines = pp.split('\n')
+    lines = lines[:-1]
+
+    # 统计张量被作为输入的次数
+    tensor_as_input_count = {}
+    for i, line in enumerate(lines):
+        ss = line.split()
+        in_num = int(ss[2])
+        out_num = int(ss[3])
+        p = 4
+        for i1 in range(in_num):
+            tensor_name = ss[p]
+            if tensor_name not in tensor_as_input_count.keys():
+                tensor_as_input_count[tensor_name] = 1
+            else:
+                tensor_as_input_count[tensor_name] += 1
+            p += 1
+
+
+    keys = tensor_as_input_count.keys()
+    for split_tensor_name in keys:
+        count = tensor_as_input_count[split_tensor_name]
+        if count > 1:
+            # 给网络插入1个Split层
+            new_lines = []
+            # 找到输出首次是split_tensor_name的层，在这个层的后面插入Split层
+            find = False
+            copy_i = 0
+            for i, line in enumerate(lines):
+                if not find:
+                    ss = line.split()
+                    in_num = int(ss[2])
+           
