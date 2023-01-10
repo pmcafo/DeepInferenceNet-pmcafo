@@ -208,4 +208,97 @@ def save_param(save_name, ncnn_data, bottom_names, replace_input_names=[], repla
     for i in range(len(replace_output_names)):
         pp = pp.replace(bottom_names[i], replace_output_names[i])
     pp = '7767517\n%d %d\n' % (layer_id, tensor_id) + pp
-    with open('%s.param' % save_name, 'w', encoding='utf-8
+    with open('%s.param' % save_name, 'w', encoding='utf-8') as f:
+        f.write(pp)
+        f.close()
+    return ncnn_data, bottom_names
+
+
+def newest_bottom_names(ncnn_data):
+    tensor_id = ncnn_data['tensor_id']
+    bottom_names = ['tensor_%.8d' % (tensor_id - 1,), ]
+    return bottom_names
+
+
+def check_bottom_names(bottom_names):
+    if isinstance(bottom_names, str):
+        bottom_names = [bottom_names, ]
+    elif isinstance(bottom_names, list):
+        all_is_str = True
+        num_input = len(bottom_names)
+        for i in range(num_input):
+            if not isinstance(bottom_names[i], str):
+                all_is_str = False
+                break
+        if not all_is_str:
+            raise NotImplementedError("bottom_names elements type not implemented.")
+    else:
+        raise NotImplementedError("bottom_names type not implemented.")
+    return bottom_names
+
+
+def create_top_names(ncnn_data, num):
+    assert num >= 1
+    tensor_id = ncnn_data['tensor_id']
+    # if tensor_id == 242:
+    #     print()
+    top_names = []
+    for i in range(num):
+        top_names.append('tensor_%.8d' % (tensor_id + i,))
+    return top_names
+
+
+def pretty_format(ncnn_data, bottom_names):
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    lines = pp.split('\n')
+    lines = lines[:-1]
+    content = ''
+    for i, line in enumerate(lines):
+        ss = line.split()
+        line2 = ''
+        for kkk, s in enumerate(ss):
+            if kkk == 0:
+                line2 += "%-24s"%s
+            elif kkk == 1:
+                line2 += ' %-24s'%s
+            elif kkk == 2:
+                line2 += ' ' + s
+            else:
+                line2 += ' ' + s
+        content += line2 + '\n'
+    pp = content
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return bottom_names
+
+
+def rename_tensor(ncnn_data, bottom_names):
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    tensor_id = 0
+    lines = pp.split('\n')
+    lines = lines[:-1]
+
+    tensors_dic = {}
+    tensor_id = 0
+    for i, line in enumerate(lines):
+        ss = line.split()
+        in_num = int(ss[2])
+        out_num = int(ss[3])
+        p = 4
+        for i1 in range(in_num):
+            tensor_name = ss[p]
+            if tensor_name not in tensors_dic.keys():
+                aaaaaaaaaa = 'tensor_%.8d' % (tensor_id, )
+                tensor_id += 1
+     
