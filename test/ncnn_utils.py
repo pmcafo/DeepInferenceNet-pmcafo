@@ -122,4 +122,90 @@ def float_to_hex(v, fp16=True):
     elif len(zhengshu_bits) == 1:
         if zhengshu_bits[0] == 1:
             E = 0
-        el
+        elif zhengshu_bits[0] == 0:
+            k = 0
+            for i in range(xiaoshu_bits_n):
+                if xiaoshu_bits[i] > 0:
+                    k = i
+                    break
+            E = -1 - k
+            xiaoshu_bits = xiaoshu_bits[k+1:]
+    E += jiema
+    jiema_bits = int_to_bits(E, len=jiema_n)
+    bits[1:1+jiema_n] = jiema_bits
+    k = 1 + jiema_n
+    for i in range(weishu_n):
+        if i >= len(xiaoshu_bits):
+            bits[k] = 0
+        else:
+            bits[k] = xiaoshu_bits[i]
+        k += 1
+    return bits
+
+
+def set_convert_to_fp16(_convert_to_fp16=False):
+    global convert_to_fp16
+    convert_to_fp16 = _convert_to_fp16
+
+
+def bp_write_tag(bp):
+    global convert_to_fp16
+    if convert_to_fp16:
+        s = struct.pack('i', 19950407)
+    else:
+        s = struct.pack('i', 0)
+    bp.write(s)
+    return bp
+
+
+def bp_write_value(bp, value, force_fp32=False):
+    global convert_to_fp16
+    if force_fp32:
+        s = struct.pack('f', value)
+    else:
+        if convert_to_fp16:
+            bits_fp16 = float_to_hex(value)
+            v_unsignedshort = bits_to_unsignedshort(bits_fp16)
+            s = struct.pack('H', v_unsignedshort)
+        else:
+            s = struct.pack('f', value)
+    bp.write(s)
+    return bp
+
+
+def create_new_param_bin(save_name, input_num):
+    bp = open('%s.bin' % save_name, 'wb')
+    pp = ''
+    layer_id = 0
+    tensor_id = 0
+    bottom_names = []
+    pp += 'Input\tlayer_%.8d\t0 %d' % (layer_id, input_num)
+    for i in range(input_num):
+        pp += ' tensor_%.8d' % tensor_id
+        bottom_names.append('tensor_%.8d' % tensor_id)
+        tensor_id += 1
+    pp += '\n'
+    layer_id += 1
+
+    ncnn_data = {}
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return ncnn_data, bottom_names
+
+
+def save_param(save_name, ncnn_data, bottom_names, replace_input_names=[], replace_output_names=[]):
+    assert isinstance(bottom_names, list)
+    assert isinstance(replace_input_names, list)
+    assert isinstance(replace_output_names, list)
+    assert len(bottom_names) == len(replace_output_names)
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+    for i in range(len(replace_input_names)):
+        pp = pp.replace('tensor_%.8d' % (i,), replace_input_names[i])
+    for i in range(len(replace_output_names)):
+        pp = pp.replace(bottom_names[i], replace_output_names[i])
+    pp = '7767517\n%d %d\n' % (layer_id, tensor_id) + pp
+    with open('%s.param' % save_name, 'w', encoding='utf-8
