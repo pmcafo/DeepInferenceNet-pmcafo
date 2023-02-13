@@ -530,3 +530,83 @@ def deformable_conv2d(ncnn_data, bottom_names, conv, act_name=None, act_param_di
         pp += ' 14=%d' % conv.padding[0]
     else:
         raise NotImplementedError("not implemented.")
+    if conv.bias is not None:
+        pp += ' 5=1'
+    else:
+        pp += ' 5=0'
+    out_C, in_C, kH, kW = conv.weight.shape
+    w_ele_num = out_C * in_C * kH * kW
+    pp += ' 6=%d' % w_ele_num
+    assert conv.groups == 1
+    # 合并激活
+    pp = fused_activation(pp, act_name, act_param_dict)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    # 卷积层写入权重。
+    bp = bp_write_tag(bp)
+
+    conv_w = conv.weight.cpu().detach().numpy()
+    for i1 in range(out_C):
+        for i2 in range(in_C):
+            for i3 in range(kH):
+                for i4 in range(kW):
+                    bp = bp_write_value(bp, conv_w[i1][i2][i3][i4])
+    if conv.bias is not None:
+        conv_b = conv.bias.cpu().detach().numpy()
+        for i1 in range(out_C):
+            bp = bp_write_value(bp, conv_b[i1], force_fp32=True)
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def PPYOLODecode(ncnn_data, bottom_names, num_classes, anchors, anchor_masks, strides, scale_x_y=1., iou_aware_factor=0.5, obj_thr=0.1, anchor_per_stride=3):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=2)
+    num = len(bottom_names)
+    pp += 'PPYOLODecode\tlayer_%.8d\t%d 2' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' %s' % top_names[1]
+    pp += ' 0=%d' % num_classes
+
+    pp += ' -23301=%d' % (anchors.shape[0] * anchors.shape[1], )
+    for i in range(len(strides)):
+        anchors_this_stride = anchors[anchor_masks[i]]
+        anchors_this_stride = np.reshape(anchors_this_stride, (-1, ))
+        for ele in anchors_this_stride:
+            pp += ',%e' % (ele, )
+
+    pp += ' -23302=%d' % (len(strides), )
+    for i in range(len(strides)):
+        stride = strides[i]
+        pp += ',%e' % (stride, )
+
+    pp += ' 3=%e' % scale_x_y
+    pp += ' 4=%e' % iou_aware_factor
+    pp += ' 5=%e' % obj_thr
+    pp += ' 6=%d' % anchor_per_stride
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 2
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def PPYOLODecodeMatrixNMS(ncnn_data, bottom_names, num_classes, anchors, anchor_masks, strides,
+                          scale_x_y=1., iou_aware_factor=0.5, score_threshold=0.1, anchor_per_stride=3,
+        
