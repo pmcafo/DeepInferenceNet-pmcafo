@@ -693,4 +693,77 @@ def fused_activation(pp, act_name, act_param_dict):
         assert isinstance(negative_slope, float)
         pp += ' -23310=1,%e' % negative_slope
     elif act_name == 'clip':
-        # 比如卷积层后接一句 x = x.clamp(-55.8, 0.89)    pnnx转换后带 -23310=2,-5.580000e+01,8.90000
+        # 比如卷积层后接一句 x = x.clamp(-55.8, 0.89)    pnnx转换后带 -23310=2,-5.580000e+01,8.900000e-01
+        pp += ' 9=3'
+        min_v = act_param_dict['min_v']
+        assert isinstance(min_v, float)
+        max_v = act_param_dict['max_v']
+        assert isinstance(max_v, float)
+        pp += ' -23310=2,%e,%e' % (min_v, max_v)
+    elif act_name == 'sigmoid':
+        pp += ' 9=4'
+    elif act_name == 'mish':
+        pp += ' 9=5'
+    elif act_name == 'hardswish':
+        pp += ' 9=6'
+        alpha = act_param_dict['alpha']
+        assert isinstance(alpha, float)
+        beta = act_param_dict['beta']
+        assert isinstance(beta, float)
+        pp += ' -23310=2,%e,%e' % (alpha, beta)
+    else:
+        raise NotImplementedError("not implemented.")
+    return pp
+
+
+def fuse_conv_bn(ncnn_data, bottom_names, conv, bn, act_name=None, act_param_dict=None):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Convolution\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += ' 0=%d' % conv.out_channels
+    if len(conv.kernel_size) == 2:
+        pp += ' 1=%d' % conv.kernel_size[1]
+        pp += ' 11=%d' % conv.kernel_size[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    if len(conv.stride) == 2:
+        pp += ' 3=%d' % conv.stride[1]
+        pp += ' 13=%d' % conv.stride[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    if len(conv.padding) == 2:
+        pp += ' 4=%d' % conv.padding[1]
+        pp += ' 14=%d' % conv.padding[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    # 合并卷积层和BN层。肯定使用了偏移bias
+    pp += ' 5=1'
+    out_C, in_C, kH, kW = conv.weight.shape
+    w_ele_num = out_C * in_C * kH * kW
+    pp += ' 6=%d' % w_ele_num
+    assert conv.groups == 1
+    # 合并激活
+    pp = fused_activation(pp, act_name, act_param_dict)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    '''
+    合并卷积层和BN层。推导：
+    y = [(conv_w * x + conv_b) - bn_m] / sqrt(bn_v + eps) * bn_w + bn_b
+    = [conv_w * x + (conv_b - bn_m)] / sqrt(bn_v + eps) * bn_w + bn_b
+    = conv_w * x / sqrt(bn_v + eps) * bn_w + (conv_b - bn_m) / sqrt(bn_v + eps) * bn_w + bn_b
+    = conv_w * bn_w / sqrt(bn_v + eps) * x + (conv_b - bn_m) / sqrt(bn_v + eps) * bn_w + bn_b
+
+    所以
+    new_conv_w = conv_w * bn_w / sqrt(bn_v + eps)
+    new_conv_b = (conv_b - bn_m) / sqrt(bn_v + eps) * bn_w + bn_b
+    '''
+
+    # 卷积层写入权重。
+    bp = bp_write_
