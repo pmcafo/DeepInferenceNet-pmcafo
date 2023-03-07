@@ -839,4 +839,78 @@ def fuse_deformconv_bn(ncnn_data, bottom_names, conv, bn, act_name=None, act_par
     合并卷积层和BN层。推导：
     y = [(conv_w * x + conv_b) - bn_m] / sqrt(bn_v + eps) * bn_w + bn_b
     = [conv_w * x + (conv_b - bn_m)] / sqrt(bn_v + eps) * bn_w + bn_b
- 
+    = conv_w * x / sqrt(bn_v + eps) * bn_w + (conv_b - bn_m) / sqrt(bn_v + eps) * bn_w + bn_b
+    = conv_w * bn_w / sqrt(bn_v + eps) * x + (conv_b - bn_m) / sqrt(bn_v + eps) * bn_w + bn_b
+
+    所以
+    new_conv_w = conv_w * bn_w / sqrt(bn_v + eps)
+    new_conv_b = (conv_b - bn_m) / sqrt(bn_v + eps) * bn_w + bn_b
+    '''
+
+    # 卷积层写入权重。
+    bp = bp_write_tag(bp)
+
+    conv_w = conv.weight.cpu().detach().numpy()
+    bn_w = bn.weight.cpu().detach().numpy()
+    bn_b = bn.bias.cpu().detach().numpy()
+    bn_m = bn.running_mean.cpu().detach().numpy()
+    bn_v = bn.running_var.cpu().detach().numpy()
+    eps = bn.eps
+    if conv.bias is not None:
+        conv_b = conv.bias.cpu().detach().numpy()
+    else:
+        conv_b = np.zeros(bn_w.shape)
+    new_conv_w = conv_w * (bn_w / np.sqrt(bn_v + eps)).reshape((-1, 1, 1, 1))
+    new_conv_b = (conv_b - bn_m) / np.sqrt(bn_v + eps) * bn_w + bn_b
+    for i1 in range(out_C):
+        for i2 in range(in_C):
+            for i3 in range(kH):
+                for i4 in range(kW):
+                    bp = bp_write_value(bp, new_conv_w[i1][i2][i3][i4])
+    for i1 in range(out_C):
+        bp = bp_write_value(bp, new_conv_b[i1], force_fp32=True)
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def pooling(ncnn_data, bottom_names, op, pool):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    op_id = -1
+    if op == 'MaxPool':
+        op_id = 0
+    elif op == 'AveragePool':
+        op_id = 1
+    else:
+        raise NotImplementedError("not implemented.")
+    dilation = pool.dilation
+    assert dilation == 1
+    ceil_mode = pool.ceil_mode
+    pad_mode = -1
+    if ceil_mode:
+        pad_mode = 0
+    else:
+        pad_mode = 1
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Pooling\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += ' 0=%d' % op_id
+    if isinstance(pool.kernel_size, int):
+        pp += ' 1=%d' % pool.kernel_size
+    elif isinstance(pool.kernel_size, (tuple, list)) and len(pool.kernel_size) == 2:
+        pp += ' 1=%d' % pool.kernel_size[1]
+        pp += ' 11=%d' % pool.kernel_size[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    if isinstance(pool.stride, int):
+        pp += ' 2=%d' % pool.stride
+    elif isinstance(pool.stride, (tuple, list)) and len(pool.stride) == 2:
+        pp += ' 2=%d' % pool.stride[1]
+        pp +
