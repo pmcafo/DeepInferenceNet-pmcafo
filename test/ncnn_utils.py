@@ -913,4 +913,83 @@ def pooling(ncnn_data, bottom_names, op, pool):
         pp += ' 2=%d' % pool.stride
     elif isinstance(pool.stride, (tuple, list)) and len(pool.stride) == 2:
         pp += ' 2=%d' % pool.stride[1]
-        pp +
+        pp += ' 12=%d' % pool.stride[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    if isinstance(pool.padding, int):
+        pp += ' 3=%d' % pool.padding
+    elif isinstance(pool.padding, (tuple, list)) and len(pool.padding) == 2:
+        pp += ' 3=%d' % pool.padding[1]
+        pp += ' 13=%d' % pool.padding[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    pp += ' 5=%d' % pad_mode
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def Fpooling(ncnn_data, bottom_names, op, kernel_size, stride, padding=0, dilation=1, ceil_mode=False):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    op_id = -1
+    if op == 'MaxPool':
+        op_id = 0
+    elif op == 'AveragePool':
+        op_id = 1
+    else:
+        raise NotImplementedError("not implemented.")
+    assert dilation == 1
+    pad_mode = -1
+    if ceil_mode:
+        pad_mode = 0
+    else:
+        pad_mode = 1
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Pooling\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += ' 0=%d' % op_id
+    if isinstance(kernel_size, int):
+        pp += ' 1=%d' % kernel_size
+    elif isinstance(kernel_size, (tuple, list)) and len(kernel_size) == 2:
+        pp += ' 1=%d' % kernel_size[1]
+        pp += ' 11=%d' % kernel_size[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    if isinstance(stride, int):
+        pp += ' 2=%d' % stride
+    elif isinstance(stride, (tuple, list)) and len(stride) == 2:
+        pp += ' 2=%d' % stride[1]
+        pp += ' 12=%d' % stride[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    if isinstance(padding, int):
+        pp += ' 3=%d' % padding
+    elif isinstance(padding, (tuple, list)) and len(padding) == 2:
+        pp += ' 3=%d' % padding[1]
+        pp += ' 13=%d' % padding[0]
+    else:
+        raise NotImplementedError("not implemented.")
+    pp += ' 5=%d' % pad_mode
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def activation(ncnn_data, bottom_names, a
