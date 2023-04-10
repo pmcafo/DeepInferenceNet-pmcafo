@@ -1155,4 +1155,87 @@ def reduction(ncnn_data, bottom_names, op, input_dims, dims, keepdim=False):
 
 
     onnx2ncnn.cpp
-        else if (op == "Reduce
+        else if (op == "ReduceMax" || op == "ReduceMin" || op == "ReduceMean" || op == "ReduceProd" || op == "ReduceSum" || op == "ReduceSumSquare" || op == "ReduceL1" || op == "ReduceL2" || op == "ReduceLogSum" || op == "ReduceLogSumExp")
+        {
+            int op_type = -233;
+            if (op == "ReduceSum")
+                op_type = 0;
+            else if (op == "ReduceSumSquare")
+                op_type = 2;
+            else if (op == "ReduceMean")
+                op_type = 3;
+            else if (op == "ReduceMax")
+                op_type = 4;
+            else if (op == "ReduceMin")
+                op_type = 5;
+            else if (op == "ReduceProd")
+                op_type = 6;
+            else if (op == "ReduceL1")
+                op_type = 7;
+            else if (op == "ReduceL2")
+                op_type = 8;
+            else if (op == "ReduceLogSum")
+                op_type = 9;
+            else if (op == "ReduceLogSumExp")
+                op_type = 10;
+            fprintf(pp, " 0=%d", op_type);
+
+            std::vector<int> axes = get_node_attr_ai(node, "axes");
+            int keepdims = get_node_attr_i(node, "keepdims", 1);
+    '''
+
+    top_names = create_top_names(ncnn_data, num=1)
+    op_id = -1
+    if op == 'ReduceSum':
+        op_id = 0
+    elif op == 'ReduceSumSquare':
+        op_id = 2
+    elif op == 'ReduceMean':
+        op_id = 3
+    elif op == 'ReduceMax':
+        op_id = 4
+    elif op == 'ReduceMin':
+        op_id = 5
+    elif op == 'ReduceProd':
+        op_id = 6
+    elif op == 'ReduceL1':
+        op_id = 7
+    elif op == 'ReduceL2':
+        op_id = 8
+    elif op == 'ReduceLogSum':
+        op_id = 9
+    elif op == 'ReduceLogSumExp':
+        op_id = 10
+    else:
+        raise NotImplementedError("not implemented.")
+
+    pp += 'Reduction\tlayer_%.8d\t1 1 %s %s 0=%d' % (layer_id, bottom_names[0], top_names[0], op_id)
+    reduce_all = False
+    if input_dims == len(dims):
+        reduce_all = True
+    if reduce_all:
+        pp += ' 1=1'
+    else:
+        pp += ' 1=0'
+    # 被干掉的维的信息。先填dims的长度，再填每个dim。由于ncnn中处理图片时是三维张量，所以填入dim-1
+    pp += ' -23303=%d' % (len(dims),)
+    for dim in dims:
+        pp += ',%d' % (dim - 1,)
+    if keepdim:
+        pp += ' 4=1'
+    else:
+        pp += ' 4=0'
+    fixbug0 = False
+    if fixbug0:
+        pp += ' 5=0'
+    else:
+        pp += ' 5=1'
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
