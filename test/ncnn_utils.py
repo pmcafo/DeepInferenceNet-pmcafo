@@ -1057,4 +1057,102 @@ def coordconcat(ncnn_data, bottom_names):
     ncnn_data['bp'] = bp
     ncnn_data['pp'] = pp
     ncnn_data['layer_id'] = layer_id
-    ncnn_data['ten
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def split(ncnn_data, bottom_names, num):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=num)
+    pp += 'Split\tlayer_%.8d\t1 %d %s' % (layer_id, num, bottom_names[0])
+    for i in range(num):
+        pp += ' %s' % top_names[i]
+    pp += '\n'
+    layer_id += 1
+    tensor_id += num
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def binaryOp(ncnn_data, bottom_names, op):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    op_id = -1
+    if op == 'Add':
+        op_id = 0
+    elif op == 'Sub':
+        op_id = 1
+    elif op == 'Mul':
+        op_id = 2
+    elif op == 'Div':
+        op_id = 3
+    elif op == 'Max':
+        op_id = 4
+    elif op == 'Min':
+        op_id = 5
+    elif op == 'Pow':
+        op_id = 6
+    elif op == 'RSub':
+        op_id = 7
+    elif op == 'RDiv':
+        op_id = 8
+    else:
+        raise NotImplementedError("not implemented.")
+
+    num = len(bottom_names)
+    pp += 'BinaryOp\tlayer_%.8d\t%d 1' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' 0=%d' % op_id
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def reduction(ncnn_data, bottom_names, op, input_dims, dims, keepdim=False):
+    bottom_names = check_bottom_names(bottom_names)
+    assert isinstance(dims, (list, tuple))
+    assert len(dims) > 0
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+    见
+    int Reduction::load_param(const ParamDict& pd)
+        {
+            operation = pd.get(0, 0);
+            reduce_all = pd.get(1, 1);
+            coeff = pd.get(2, 1.f);
+            axes = pd.get(3, Mat());
+            keepdims = pd.get(4, 0);
+
+            return 0;
+        }
+    0=3表示mean
+
+
+    onnx2ncnn.cpp
+        else if (op == "Reduce
