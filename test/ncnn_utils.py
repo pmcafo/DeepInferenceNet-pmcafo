@@ -992,4 +992,69 @@ def Fpooling(ncnn_data, bottom_names, op, kernel_size, stride, padding=0, dilati
     return top_names
 
 
-def activation(ncnn_data, bottom_names, a
+def activation(ncnn_data, bottom_names, act_name, args={}):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    if act_name == None:
+        top_names = bottom_names
+    elif act_name == 'swish':
+        pp += 'Swish\tlayer_%.8d\t1 1 %s %s\n' % (layer_id, bottom_names[0], top_names[0])
+        layer_id += 1
+        tensor_id += 1
+    elif act_name == 'sigmoid':
+        print('There is a sigmoid layer, maybe you can fuse it with its previous layer.')
+        pp += 'Sigmoid\tlayer_%.8d\t1 1 %s %s\n' % (layer_id, bottom_names[0], top_names[0])
+        layer_id += 1
+        tensor_id += 1
+    elif act_name == 'mish':
+        print('There is a mish layer, maybe you can fuse it with its previous layer.')
+        pp += 'Mish\tlayer_%.8d\t1 1 %s %s\n' % (layer_id, bottom_names[0], top_names[0])
+        layer_id += 1
+        tensor_id += 1
+    elif act_name == 'hardsigmoid':
+        pp += 'HardSigmoid\tlayer_%.8d\t1 1 %s %s 0=1.666667e-01 1=5.000000e-01\n' % (layer_id, bottom_names[0], top_names[0])
+        layer_id += 1
+        tensor_id += 1
+    elif act_name == 'leaky_relu':
+        print('There is a leaky_relu layer, maybe you can fuse it with its previous layer.')
+        negative_slope = args['negative_slope']
+        assert isinstance(negative_slope, float)
+        pp += 'ReLU\tlayer_%.8d\t1 1 %s %s 0=%e\n' % (layer_id, bottom_names[0], top_names[0], negative_slope)
+        layer_id += 1
+        tensor_id += 1
+    elif act_name == 'relu':
+        print('There is a relu layer, maybe you can fuse it with its previous layer.')
+        pp += 'ReLU\tlayer_%.8d\t1 1 %s %s 0=0.0\n' % (layer_id, bottom_names[0], top_names[0])
+        layer_id += 1
+        tensor_id += 1
+    else:
+        raise NotImplementedError("not implemented.")
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def coordconcat(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'CoordConcat\tlayer_%.8d\t1 1 %s %s 0=0\n' % (layer_id, bottom_names[0], top_names[0])
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['ten
