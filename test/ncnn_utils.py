@@ -1321,4 +1321,96 @@ def really_reduction(ncnn_data, bottom_names, op, dims, keepdim=False):
         raise NotImplementedError("not implemented.")
 
     pp += 'Reduction\tlayer_%.8d\t1 1 %s %s 0=%d' % (layer_id, bottom_names[0], top_names[0], op_id)
-    red
+    reduce_all = False
+    if reduce_all:
+        pp += ' 1=1'
+    else:
+        pp += ' 1=0'
+    # 被干掉的维的信息。
+    pp += ' -23303=%d' % (len(dims),)
+    for dim in dims:
+        pp += ',%d' % (dim,)
+    if keepdim:
+        pp += ' 4=1'
+    else:
+        pp += ' 4=0'
+    fixbug0 = False
+    if fixbug0:
+        pp += ' 5=0'
+    else:
+        pp += ' 5=1'
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def crop(ncnn_data, bottom_names, starts, ends, axes):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+        x = x[:, :2, :4, :4] 可以被翻译成
+Crop             layer_name                  1 1 tensor_xx tensor_xxx -23309=3,0,0,0 -23310=3,2,4,4 -23311=3,0,1,2
+        x = x[:, :2, :, :] 可以被翻译成
+Crop             layer_name                  1 1 tensor_xx tensor_xxx -23309=1,0 -23310=1,2 -23311=1,0
+即：
+-23309第0个参数表示有几个维做切片，第1个参数表示第0个做切片的维开始切片的下标，第2个参数表示第1个做切片的维开始切片的下标，...
+-23310第0个参数表示有几个维做切片，第1个参数表示第0个做切片的维结束切片的下标，第2个参数表示第1个做切片的维结束切片的下标，...
+-23311第0个参数表示有几个维做切片，第1个参数表示第0个做切片的维的下标，第2个参数表示第1个做切片的维的下标，...
+
+由于ncnn中处理图片时是三维张量，所以填入的维的下标需要-1
+    '''
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Crop\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += ' -23309=%s -23310=%s -23311=%s' % (starts, ends, axes)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def concat(ncnn_data, bottom_names, dim):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+Concat           Concat_33                2 1 67 83 84 0=0
+    '''
+
+    top_names = create_top_names(ncnn_data, num=1)
+    num = len(bottom_names)
+    pp += 'Concat\tlayer_%.8d\t%d 1' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' 0=%d' % (dim - 1, )
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def interpolate(ncnn_data, bottom_na
