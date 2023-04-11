@@ -1413,4 +1413,96 @@ Concat           Concat_33                2 1 67 83 84 0=0
     return top_names
 
 
-def interpolate(ncnn_data, bottom_na
+def interpolate(ncnn_data, bottom_names, size=None, scale_factor=None, mode='nearest', align_corners=None, recompute_scale_factor=None):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    assert size is None
+    output_height = 0
+    output_width = 0
+    assert isinstance(scale_factor, float)
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Interp\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+
+
+    resize_type = 1
+    if mode == 'nearest':
+        resize_type = 1
+    elif mode == 'bilinear':
+        resize_type = 2
+    elif mode == 'bicubic':
+        resize_type = 3
+    else:
+        raise NotImplementedError("not implemented.")
+    align_corner = 0
+    if align_corners:
+        align_corner = 1
+    pp += ' 0=%d 1=%e 2=%e' % (resize_type, scale_factor, scale_factor)
+    pp += ' 3=%d 4=%d 6=%d\n' % (output_height, output_width, align_corner)
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def permute(ncnn_data, bottom_names, perm=None):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    # 死记硬背
+    args = ''
+    if perm == '(0, 2, 3, 1)':
+        args = ' 0=3'
+    elif perm == '(0, 3, 1, 2)':
+        args = ' 0=4'
+    elif perm == '(0, 2, 1, 3)':
+        args = ' 0=2'
+    elif perm == '(0, 2, 1)':
+        args = ' 0=1'
+    elif perm == '(1, 0)':
+        args = ' 0=1'
+    elif perm == '(1, 0, 2, 3)':
+        args = ' 0=11111'
+    else:
+        raise NotImplementedError("not implemented.")
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Permute\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += args
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def adaptive_avg_pool2d(ncnn_data, bottom_names, output_size=None):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    # 死记硬背.全局平均池化
+    args = ''
+    if output_size == '(1, 1)':
+        args = ' 0=1 4=1'
+    else:
+        raise NotImplementedError("not implemented.")
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Pooling\tlayer_%.8d
