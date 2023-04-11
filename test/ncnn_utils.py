@@ -1239,3 +1239,86 @@ def reduction(ncnn_data, bottom_names, op, input_dims, dims, keepdim=False):
     ncnn_data['layer_id'] = layer_id
     ncnn_data['tensor_id'] = tensor_id
     return top_names
+
+
+def really_reduction(ncnn_data, bottom_names, op, dims, keepdim=False):
+    bottom_names = check_bottom_names(bottom_names)
+    assert isinstance(dims, (list, tuple))
+    assert len(dims) > 0
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+    见
+    int Reduction::load_param(const ParamDict& pd)
+        {
+            operation = pd.get(0, 0);
+            reduce_all = pd.get(1, 1);
+            coeff = pd.get(2, 1.f);
+            axes = pd.get(3, Mat());
+            keepdims = pd.get(4, 0);
+
+            return 0;
+        }
+    0=3表示mean
+
+
+    onnx2ncnn.cpp
+        else if (op == "ReduceMax" || op == "ReduceMin" || op == "ReduceMean" || op == "ReduceProd" || op == "ReduceSum" || op == "ReduceSumSquare" || op == "ReduceL1" || op == "ReduceL2" || op == "ReduceLogSum" || op == "ReduceLogSumExp")
+        {
+            int op_type = -233;
+            if (op == "ReduceSum")
+                op_type = 0;
+            else if (op == "ReduceSumSquare")
+                op_type = 2;
+            else if (op == "ReduceMean")
+                op_type = 3;
+            else if (op == "ReduceMax")
+                op_type = 4;
+            else if (op == "ReduceMin")
+                op_type = 5;
+            else if (op == "ReduceProd")
+                op_type = 6;
+            else if (op == "ReduceL1")
+                op_type = 7;
+            else if (op == "ReduceL2")
+                op_type = 8;
+            else if (op == "ReduceLogSum")
+                op_type = 9;
+            else if (op == "ReduceLogSumExp")
+                op_type = 10;
+            fprintf(pp, " 0=%d", op_type);
+
+            std::vector<int> axes = get_node_attr_ai(node, "axes");
+            int keepdims = get_node_attr_i(node, "keepdims", 1);
+    '''
+
+    top_names = create_top_names(ncnn_data, num=1)
+    op_id = -1
+    if op == 'ReduceSum':
+        op_id = 0
+    elif op == 'ReduceSumSquare':
+        op_id = 2
+    elif op == 'ReduceMean':
+        op_id = 3
+    elif op == 'ReduceMax':
+        op_id = 4
+    elif op == 'ReduceMin':
+        op_id = 5
+    elif op == 'ReduceProd':
+        op_id = 6
+    elif op == 'ReduceL1':
+        op_id = 7
+    elif op == 'ReduceL2':
+        op_id = 8
+    elif op == 'ReduceLogSum':
+        op_id = 9
+    elif op == 'ReduceLogSumExp':
+        op_id = 10
+    else:
+        raise NotImplementedError("not implemented.")
+
+    pp += 'Reduction\tlayer_%.8d\t1 1 %s %s 0=%d' % (layer_id, bottom_names[0], top_names[0], op_id)
+    red
