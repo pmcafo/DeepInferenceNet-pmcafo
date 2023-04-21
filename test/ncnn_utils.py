@@ -2046,4 +2046,91 @@ def BiasAct(ncnn_data, bottom_names, act_type, alpha, gain, clamp):
 
 
 def F4DOp1D(ncnn_data, bottom_names, dim, op):
-    bottom_
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    op_id = -1
+    if op == 'Mul':
+        op_id = 0
+    elif op == 'Div':
+        op_id = 1
+    elif op == 'Add':
+        op_id = 2
+    elif op == 'Sub':
+        op_id = 3
+    else:
+        raise NotImplementedError("not implemented.")
+
+    num_input = len(bottom_names)
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'F4DOp1D\tlayer_%.8d\t%d 1' % (layer_id, num_input)
+    for i in range(num_input):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' 0=%d' % dim
+    pp += ' 1=%d' % op_id
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def AddNoise(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    num_input = len(bottom_names)
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'AddNoise\tlayer_%.8d\t%d 1' % (layer_id, num_input)
+    for i in range(num_input):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def Fconv2d(ncnn_data, bottom_names, stride=1, padding=0, dilation=1, groups=1):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    num = len(bottom_names)
+    pp += 'Convolution\tlayer_%.8d\t%d 1' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+
+    pad_left, pad_right, pad_top, pad_bottom = 0, 0, 0, 0
+    if isinstance(padding, int):
+        pad_left = padding
+        pad_right = padding
+        pad_top = padding
+        pad_bottom = padding
+    elif isinstance(padding, list) or isinstance(padding, tuple):
+        if len(padding) == 2:
+            pad_left = padding[1]
+            pad_right = padding[1]
+            pad_top = padding[0]
+            pad_bottom = padding[0]
+        elif len(paddin
