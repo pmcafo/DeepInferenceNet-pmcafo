@@ -1587,4 +1587,98 @@ def really_reshape(ncnn_data, bottom_names, shape):
 
     ncnn_data['bp'] = bp
     ncnn_data['pp'] = pp
-    ncnn_data['layer_id'] = la
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def list_equal(arr1, arr2):
+    if len(arr1) == 4:
+        return arr1[0] == arr2[0] and arr1[1] == arr2[1] and arr1[2] == arr2[2] and arr1[3] == arr2[3]
+    elif len(arr1) == 3:
+        return arr1[0] == arr2[0] and arr1[1] == arr2[1] and arr1[2] == arr2[2]
+    elif len(arr1) == 2:
+        return arr1[0] == arr2[0] and arr1[1] == arr2[1]
+
+def really_permute(ncnn_data, bottom_names, perm):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    assert isinstance(perm, (list, tuple))
+
+    '''
+    针对ncnn的CDHW格式的四维张量进行真正的permute
+        // order_type
+        // 0 = w h d c
+        // 1 = h w d c
+        // 2 = w d h c
+        // 3 = d w h c
+        // 4 = h d w c
+        // 5 = d h w c
+        // 6 = w h c d
+        // 7 = h w c d
+        // 8 = w c h d
+        // 9 = c w h d
+        //10 = h c w d
+        //11 = c h w d
+        //12 = w d c h
+        //13 = d w c h
+        //14 = w c d h
+        //15 = c w d h
+        //16 = d c w h
+        //17 = c d w h
+        //18 = h d c w
+        //19 = d h c w
+        //20 = h c d w
+        //21 = c h d w
+        //22 = d c h w
+        //23 = c d h w
+    但是维度排列你要倒着看。比如 CDHW格式 对应 上图的 w h d c，
+    你要转成 DCHW格式(即python端perm==[1, 0, 2, 3])  对应 上图的 w h c d，所以参数填6。其它情况同理。
+    
+        // order_type
+        // 0 = w h
+        // 1 = h w
+        
+        // order_type
+        // 0 = w h c
+        // 1 = h w c
+        // 2 = w c h
+        // 3 = c w h
+        // 4 = h c w
+        // 5 = c h w
+    '''
+    #
+    args = ''
+    if len(perm) == 4:
+        if list_equal(perm, [0, 1, 2, 3]):
+            raise NotImplementedError("not implemented.")
+        elif list_equal(perm, [1, 0, 2, 3]):
+            args = ' 0=6'
+        else:
+            raise NotImplementedError("not implemented.")
+    elif len(perm) == 3:
+        if list_equal(perm, [0, 1, 2]):
+            raise NotImplementedError("not implemented.")
+        elif list_equal(perm, [2, 0, 1]):
+            args = ' 0=4'
+        else:
+            raise NotImplementedError("not implemented.")
+    elif len(perm) == 2:
+        if list_equal(perm, [0, 1]):
+            raise NotImplementedError("not implemented.")
+        elif list_equal(perm, [1, 0]):
+            args = ' 0=1'
+        else:
+            raise NotImplementedError("not implemented.")
+    else:
+        raise NotImplementedError("not implemented.")
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Permute\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += args
+    pp += '\n'
+    layer_
