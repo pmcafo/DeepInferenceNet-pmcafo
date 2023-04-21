@@ -1505,4 +1505,86 @@ def adaptive_avg_pool2d(ncnn_data, bottom_names, output_size=None):
         raise NotImplementedError("not implemented.")
 
     top_names = create_top_names(ncnn_data, num=1)
-    pp += 'Pooling\tlayer_%.8d
+    pp += 'Pooling\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += args
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def reshape(ncnn_data, bottom_names, shape):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    #
+    args = ''
+    if len(shape) == 1:
+        args = ' 0=%d'%(shape[0], )
+    elif len(shape) == 2:
+        args = ' 0=%d'%(shape[1], )
+    elif len(shape) == 3:
+        args = ' 0=%d 1=%d'%(shape[2], shape[1])
+    elif len(shape) == 4:
+        args = ' 0=%d 1=%d 2=%d'%(shape[3], shape[2], shape[1])
+    elif len(shape) == 5:
+        args = ' 0=%d 1=%d 2=%d'%(shape[4] * shape[3], shape[2], shape[1])
+    else:
+        raise NotImplementedError("not implemented.")
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Reshape\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += args
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def really_reshape(ncnn_data, bottom_names, shape):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+    针对ncnn的CDHW格式的四维张量进行真正的reshape
+    '''
+    #
+    assert isinstance(shape, (list, tuple))
+    args = ''
+    if len(shape) == 4:  # 此时shape代表ncnn中的CDHW
+        args = ' 0=%d 1=%d 11=%d 2=%d' % (shape[3], shape[2], shape[1], shape[0])
+    elif len(shape) == 3:  # 此时shape代表ncnn中的CHW
+        args = ' 0=%d 1=%d 2=%d' % (shape[2], shape[1], shape[0])
+    elif len(shape) == 2:  # 此时shape代表ncnn中的HW
+        args = ' 0=%d 1=%d' % (shape[1], shape[0])
+    elif len(shape) == 1:  # 此时shape代表ncnn中的W
+        args = ' 0=%d' % (shape[0], )
+    else:
+        raise NotImplementedError("not implemented.")
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Reshape\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += args
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = la
