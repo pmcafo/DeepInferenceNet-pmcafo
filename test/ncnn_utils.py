@@ -1863,4 +1863,98 @@ def lerp(ncnn_data, bottom_names):
 
 
 def StyleMixingSwitcher(ncnn_data, bottom_names, ws_i=0):
-    bottom_nam
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    num = len(bottom_names)
+    pp += 'StyleMixingSwitcher\tlayer_%.8d\t%d 1' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' 0=%d' % (ws_i,)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def MulConstant(ncnn_data, bottom_names, scale=1.0, bias=0.0):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'MulConstant\tlayer_%.8d\t1 1 %s %s 0=%e 1=%e' % (layer_id, bottom_names[0], top_names[0], scale, bias)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def shell(ncnn_data, bottom_names, weight, bias, ncnn_weight_dims=4):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+    weight 是2维张量时，要求传入的weight reshape成 CD11形状(ncnn中的形状也是CD11)，bias形状要求是[C, ](ncnn中的形状是111C)；
+    weight 是4维张量时，要求传入的weight是CDHW形状(ncnn中的形状也是CDHW)，bias形状要求是[C, ](ncnn中的形状是111C)；
+    '''
+
+    w_dims = len(weight.shape)
+    assert w_dims == 4
+    C, D, H, W = weight.shape
+    num = 1
+    if bias is not None:
+        num = 2
+
+
+    top_names = create_top_names(ncnn_data, num=num)
+    pp += 'Shell\tlayer_%.8d\t1 %d %s' % (layer_id, num, bottom_names[0])
+    for i in range(num):
+        pp += ' %s' % top_names[i]
+
+    pp += ' 2=%d' % C
+    pp += ' 11=%d' % D
+    pp += ' 1=%d' % H
+    pp += ' 0=%d' % W
+    pp += ' 3=%d' % ncnn_weight_dims
+    if bias is not None:
+        pp += ' 5=1'
+    else:
+        pp += ' 5=0'
+    w_ele_num = C * D * H * W
+    pp += ' 6=%d' % w_ele_num
+    pp += '\n'
+    layer_id += 1
+    tensor_id += num
+
+    # 卷积层写入权重。
+    bp = bp_write_tag(bp)
+
+    conv_w = weight.cpu().detach().numpy()
+
+    if w_dims == 4:
+        for i1 in range(C):
+            for i2 in range(D):
+                for i3 in range(H):
+                    for i4 in range(W):
+            
