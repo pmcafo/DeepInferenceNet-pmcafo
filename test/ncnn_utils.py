@@ -1773,4 +1773,94 @@ def rsqrt(ncnn_data, bottom_names, eps=0.0, scale=None):
 
     ncnn_data['bp'] = bp
     ncnn_data['pp'] = pp
-    ncnn_data['
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def sqrt(ncnn_data, bottom_names, eps=0.0):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Sqrt\tlayer_%.8d\t1 1 %s %s 0=%e' % (layer_id, bottom_names[0], top_names[0], eps)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def sin(ncnn_data, bottom_names, scale=1.0):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Sin\tlayer_%.8d\t1 1 %s %s 0=%e' % (layer_id, bottom_names[0], top_names[0], scale)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def clamp(ncnn_data, bottom_names, min_v=0.0, max_v=1.0):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Clamp\tlayer_%.8d\t1 1 %s %s 0=%e 1=%e' % (layer_id, bottom_names[0], top_names[0], min_v, max_v)
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def lerp(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    num = len(bottom_names)
+    pp += 'Lerp\tlayer_%.8d\t%d 1' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def StyleMixingSwitcher(ncnn_data, bottom_names, ws_i=0):
+    bottom_nam
