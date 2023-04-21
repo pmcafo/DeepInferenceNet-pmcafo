@@ -1957,4 +1957,93 @@ def shell(ncnn_data, bottom_names, weight, bias, ncnn_weight_dims=4):
             for i2 in range(D):
                 for i3 in range(H):
                     for i4 in range(W):
-            
+                        bp = bp_write_value(bp, conv_w[i1][i2][i3][i4], force_fp32=True)
+    if bias is not None:
+        conv_b = bias.cpu().detach().numpy()
+        for i1 in range(C):
+            bp = bp_write_value(bp, conv_b[i1], force_fp32=True)
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def Fmatmul(ncnn_data, bottom_names, weight_shape):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    '''
+    注意！Fmatmul层借鉴了卷积层的代码，当kH==1和kW==1时，调用InnerProduct层。
+    卷积层的权重的形状是[out_C, in_C, kH, kW]
+    所以必须要保证传入Fmatmul层的w的形状是[out_C, in_C]而不能是[in_C, out_C]，否则会计算出错误结果！
+    '''
+
+    num_input = len(bottom_names)
+    assert num_input in [2, 3]
+    bias_term = 1
+    if num_input == 2:
+        bias_term = 0
+
+    w_dims = len(weight_shape)
+    assert w_dims in [2, ]
+    if w_dims == 2:
+        out_C, in_C = weight_shape
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Fmatmul\tlayer_%.8d\t%d 1' % (layer_id, num_input)
+    for i in range(num_input):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' 0=%d' % out_C
+    pp += ' 1=%d' % bias_term
+    w_ele_num = out_C * in_C
+    pp += ' 2=%d' % w_ele_num
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def BiasAct(ncnn_data, bottom_names, act_type, alpha, gain, clamp):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    num_input = len(bottom_names)
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'BiasAct\tlayer_%.8d\t%d 1' % (layer_id, num_input)
+    for i in range(num_input):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+    pp += ' 0=%d' % act_type
+    pp += ' 1=%e' % alpha
+    pp += ' 2=%e' % gain
+    pp += ' 3=%e' % clamp
+    if num_input == 1:
+        pp += ' 4=0'
+    elif num_input == 2:
+        pp += ' 4=1'
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def F4DOp1D(ncnn_data, bottom_names, dim, op):
+    bottom_
