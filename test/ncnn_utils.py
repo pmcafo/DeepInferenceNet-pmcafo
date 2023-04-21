@@ -1681,4 +1681,96 @@ def really_permute(ncnn_data, bottom_names, perm):
     pp += 'Permute\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
     pp += args
     pp += '\n'
-    layer_
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def softmax(ncnn_data, bottom_names, dim):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    assert isinstance(dim, int)
+    assert dim >= 0
+    args = ' 0=%d 1=1'%(dim - 1, )
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Softmax\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += args
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def square(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Square\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def abs(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Abs\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def rsqrt(ncnn_data, bottom_names, eps=0.0, scale=None):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Rsqrt\tlayer_%.8d\t1 1 %s %s 0=%e' % (layer_id, bottom_names[0], top_names[0], eps)
+    if scale is not None:
+        pp += ' 1=%e' % (scale, )
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['
