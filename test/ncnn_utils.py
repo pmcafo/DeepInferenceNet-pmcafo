@@ -2306,4 +2306,99 @@ def Fconv_transpose2d(ncnn_data, bottom_names, weight_shape, stride=1, padding=0
             stride_h = stride[0]
             stride_w = stride[1]
         else:
-  
+            raise NotImplementedError("not implemented.")
+    else:
+        raise NotImplementedError("not implemented.")
+    pp += ' 3=%d' % stride_w
+    pp += ' 13=%d' % stride_h
+
+    if num == 3:
+        pp += ' 5=1'
+    else:
+        pp += ' 5=0'
+    out_C, in_C, kH, kW = weight_shape
+    w_ele_num = out_C * in_C * kH * kW
+    pp += ' 6=%d' % w_ele_num
+    pp += ' 11=%d' % kH
+    pp += ' 1=%d' % kW
+    pp += ' 0=%d' % out_C
+    pp += ' 31=%d' % in_C
+
+    assert dilation == 1
+    assert groups == 1
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def pad(ncnn_data, bottom_names, top=0, bottom=0, left=0, right=0, front=0, behind=0, value=0.0, mode="constant"):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    assert mode in ["constant", "edge", "reflect"]
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Padding\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    if mode == "constant":
+        pp += ' 4=0'
+    elif mode == "edge":
+        pp += ' 4=1'
+    elif mode == "reflect":
+        pp += ' 4=2'
+
+    pp += ' 5=%e' % value
+    pp += ' 0=%d' % top
+    pp += ' 1=%d' % bottom
+    pp += ' 2=%d' % left
+    pp += ' 3=%d' % right
+    pp += ' 7=%d' % front
+    pp += ' 8=%d' % behind
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def down2(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Down2\tlayer_%.8d\t1 1 %s %s' % (layer_id, bottom_names[0], top_names[0])
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def up2(ncnn_data, bottom_names):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    pp += 'Up2\tlayer_%.8d\t1 1 %s %s
