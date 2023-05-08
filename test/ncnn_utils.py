@@ -2218,4 +2218,92 @@ def Fconv2d_depthwise(ncnn_data, bottom_names, stride=1, padding=0, dilation=1, 
     else:
         raise NotImplementedError("not implemented.")
     pp += ' 4=%d' % pad_left
-    pp += ' 15=
+    pp += ' 15=%d' % pad_right
+    pp += ' 14=%d' % pad_top
+    pp += ' 16=%d' % pad_bottom
+
+    stride_h, stride_w = 1, 1
+    if isinstance(stride, int):
+        stride_h = stride
+        stride_w = stride
+    elif isinstance(stride, list) or isinstance(stride, tuple):
+        if len(padding) == 2:
+            stride_h = stride[0]
+            stride_w = stride[1]
+        else:
+            raise NotImplementedError("not implemented.")
+    else:
+        raise NotImplementedError("not implemented.")
+    pp += ' 3=%d' % stride_w
+    pp += ' 13=%d' % stride_h
+
+    if num == 3:
+        pp += ' 5=1'
+    else:
+        pp += ' 5=0'
+
+    # dynamic_weight
+    pp += ' 19=1'
+    assert dilation == 1
+    pp += ' 7=%d' % groups
+    pp += '\n'
+    layer_id += 1
+    tensor_id += 1
+
+    ncnn_data['bp'] = bp
+    ncnn_data['pp'] = pp
+    ncnn_data['layer_id'] = layer_id
+    ncnn_data['tensor_id'] = tensor_id
+    return top_names
+
+
+def Fconv_transpose2d(ncnn_data, bottom_names, weight_shape, stride=1, padding=0, output_padding=0, dilation=1, groups=1):
+    bottom_names = check_bottom_names(bottom_names)
+    bp = ncnn_data['bp']
+    pp = ncnn_data['pp']
+    layer_id = ncnn_data['layer_id']
+    tensor_id = ncnn_data['tensor_id']
+
+    top_names = create_top_names(ncnn_data, num=1)
+    num = len(bottom_names)
+    pp += 'FconvTranspose2d\tlayer_%.8d\t%d 1' % (layer_id, num)
+    for i in range(num):
+        pp += ' %s' % bottom_names[i]
+    pp += ' %s' % top_names[0]
+
+    pad_left, pad_right, pad_top, pad_bottom = 0, 0, 0, 0
+    if isinstance(padding, int):
+        pad_left = padding
+        pad_right = padding
+        pad_top = padding
+        pad_bottom = padding
+    elif isinstance(padding, list) or isinstance(padding, tuple):
+        if len(padding) == 2:
+            pad_left = padding[1]
+            pad_right = padding[1]
+            pad_top = padding[0]
+            pad_bottom = padding[0]
+        elif len(padding) == 4:
+            pad_left = padding[2]
+            pad_right = padding[3]
+            pad_top = padding[0]
+            pad_bottom = padding[1]
+        else:
+            raise NotImplementedError("not implemented.")
+    else:
+        raise NotImplementedError("not implemented.")
+    pp += ' 4=%d' % pad_left
+    pp += ' 15=%d' % pad_right
+    pp += ' 14=%d' % pad_top
+    pp += ' 16=%d' % pad_bottom
+
+    stride_h, stride_w = 1, 1
+    if isinstance(stride, int):
+        stride_h = stride
+        stride_w = stride
+    elif isinstance(stride, list) or isinstance(stride, tuple):
+        if len(padding) == 2:
+            stride_h = stride[0]
+            stride_w = stride[1]
+        else:
+  
