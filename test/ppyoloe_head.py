@@ -78,4 +78,63 @@ class ESEAttn(nn.Module):
     def _init_weights(self):
         normal_(self.fc.weight, std=0.001)
 
-    def forward(self, fe
+    def forward(self, feat, avg_feat):
+        weight = torch.sigmoid(self.fc(avg_feat))
+        return self.conv(feat * weight)
+
+    def export_ncnn(self, ncnn_data, bottom_names):
+        feat = bottom_names[0]
+        avg_feat = bottom_names[1]
+
+        weight = ncnn_utils.conv2d(ncnn_data, [avg_feat, ], self.fc, 'sigmoid')
+
+        # 然后是逐元素相乘
+        bottom_names = ncnn_utils.binaryOp(ncnn_data, [feat, weight[0]], op='Mul')
+        bottom_names = self.conv.export_ncnn(ncnn_data, bottom_names)
+        return bottom_names
+
+    def add_param_group(self, param_groups, base_lr, base_wd, need_clip, clip_norm):
+        self.conv.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+        if self.fc.weight.requires_grad:
+            param_group_conv_weight = {'params': [self.fc.weight]}
+            param_group_conv_weight['lr'] = base_lr * 1.0
+            param_group_conv_weight['base_lr'] = base_lr * 1.0
+            param_group_conv_weight['weight_decay'] = base_wd
+            param_group_conv_weight['need_clip'] = need_clip
+            param_group_conv_weight['clip_norm'] = clip_norm
+            param_groups.append(param_group_conv_weight)
+        if self.fc.bias.requires_grad:
+            param_group_conv_bias = {'params': [self.fc.bias]}
+            param_group_conv_bias['lr'] = base_lr * 1.0
+            param_group_conv_bias['base_lr'] = base_lr * 1.0
+            param_group_conv_bias['weight_decay'] = base_wd
+            param_group_conv_bias['need_clip'] = need_clip
+            param_group_conv_bias['clip_norm'] = clip_norm
+            param_groups.append(param_group_conv_bias)
+
+
+class PPYOLOEHead(nn.Module):
+    __shared__ = ['num_classes', 'eval_size', 'trt', 'exclude_nms']
+    __inject__ = ['static_assigner', 'assigner', 'nms']
+
+    def __init__(self,
+                 in_channels=[1024, 512, 256],
+                 num_classes=80,
+                 act='swish',
+                 fpn_strides=(32, 16, 8),
+                 grid_cell_scale=5.0,
+                 grid_cell_offset=0.5,
+                 reg_max=16,
+                 static_assigner_epoch=4,
+                 use_varifocal_loss=True,
+                 static_assigner='ATSSAssigner',
+                 assigner='TaskAlignedAssigner',
+                 nms='MultiClassNMS',
+                 eval_size=None,
+                 loss_weight={
+                     'class': 1.0,
+                     'iou': 2.5,
+                     'dfl': 0.5,
+                 },
+                 trt=False,
+           
