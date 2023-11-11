@@ -299,4 +299,53 @@ class PPYOLOEHead(nn.Module):
                 _, _, h, w = feats[i].shape
             else:
                 h = int(self.eval_size[0] / stride)
-                w = 
+                w = int(self.eval_size[1] / stride)
+            shift_x = torch.arange(end=w) + self.grid_cell_offset
+            shift_y = torch.arange(end=h) + self.grid_cell_offset
+            # shift_y, shift_x = torch.meshgrid(shift_y, shift_x, indexing="ij")
+            shift_y, shift_x = torch.meshgrid(shift_y, shift_x)
+            anchor_point = torch.stack([shift_x, shift_y], -1).to(torch.float32)
+            anchor_points.append(anchor_point.reshape([-1, 2]))
+            stride_tensor.append(
+                torch.full(
+                    [h * w, 1], stride, dtype=torch.float32))
+        anchor_points = torch.cat(anchor_points)
+        stride_tensor = torch.cat(stride_tensor)
+        return anchor_points, stride_tensor
+
+    def forward_eval(self, feats):
+        if self.eval_size:
+            anchor_points, stride_tensor = self.anchor_points, self.stride_tensor
+        else:
+            anchor_points, stride_tensor = self._generate_anchors(feats)
+        cls_score_list, reg_dist_list = [], []
+        for i, feat in enumerate(feats):
+            b, _, h, w = feat.shape
+            l = h * w
+            avg_feat = F.adaptive_avg_pool2d(feat, (1, 1))
+            ttttttttttttttt = self.stem_cls[i](feat, avg_feat) + feat
+            aaaaaaaa = ttttttttttttttt.permute((0, 2, 3, 1)).cpu().detach().numpy()
+            cls_logit = self.pred_cls[i](ttttttttttttttt)
+            reg_dist = self.pred_reg[i](self.stem_reg[i](feat, avg_feat))
+            reg_dist = reg_dist.reshape([-1, 4, self.reg_max + 1, l])
+            reg_dist = reg_dist.permute((0, 2, 1, 3))
+            reg_dist = F.softmax(reg_dist, dim=1)
+            aaaaaaaa = reg_dist.permute((0, 2, 3, 1)).cpu().detach().numpy()
+            aaaaaaaabb = reg_dist.permute((0, 3, 2, 1)).cpu().detach().numpy()
+            reg_dist = self.proj_conv(reg_dist)
+            aaaaaaaabb222 = reg_dist.permute((0, 3, 2, 1)).cpu().detach().numpy()
+            # cls and reg
+            cls_score = torch.sigmoid(cls_logit)
+            cls_score_list.append(cls_score.reshape([b, self.num_classes, l]))
+            reg_dist_list.append(reg_dist.reshape([b, 4, l]))
+
+        cls_score_list = torch.cat(cls_score_list, -1)  # [N, 80, A]
+        reg_dist_list = torch.cat(reg_dist_list, -1)    # [N,  4, A]
+
+        return cls_score_list, reg_dist_list, anchor_points, stride_tensor
+
+    def export_ncnn(self, ncnn_data, bottom_names):
+        feats = bottom_names
+        cls_score_list, reg_dist_list = [], []
+        for i, feat in enumerate(feats):
+   
