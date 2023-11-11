@@ -241,4 +241,62 @@ class PPYOLOEHead(nn.Module):
             self.proj.reshape([1, self.reg_max + 1, 1, 1]))
 
         if self.eval_size:
-            anchor_points, stride_tensor 
+            anchor_points, stride_tensor = self._generate_anchors()
+            self.register_buffer('anchor_points', anchor_points)
+            self.register_buffer('stride_tensor', stride_tensor)
+
+    def forward_train(self, feats, targets):
+        anchors, anchor_points, num_anchors_list, stride_tensor = \
+            generate_anchors_for_grid_cell(
+                feats, self.fpn_strides, self.grid_cell_scale,
+                self.grid_cell_offset)
+
+        cls_score_list, reg_distri_list = [], []
+        for i, feat in enumerate(feats):
+            avg_feat = F.adaptive_avg_pool2d(feat, (1, 1))
+            cls_logit = self.pred_cls[i](self.stem_cls[i](feat, avg_feat) +
+                                         feat)
+            reg_distri = self.pred_reg[i](self.stem_reg[i](feat, avg_feat))
+            # cls and reg
+            cls_score = torch.sigmoid(cls_logit)
+            cls_score_list.append(cls_score.flatten(2).permute((0, 2, 1)))
+            reg_distri_list.append(reg_distri.flatten(2).permute((0, 2, 1)))
+        cls_score_list = torch.cat(cls_score_list, 1)
+        reg_distri_list = torch.cat(reg_distri_list, 1)
+
+        # import numpy as np
+        # dic = np.load('../aaa.npz')
+        # cls_score_list = torch.Tensor(dic['cls_score_list'])
+        # reg_distri_list = torch.Tensor(dic['reg_distri_list'])
+        # anchors = torch.Tensor(dic['anchors'])
+        # anchor_points = torch.Tensor(dic['anchor_points'])
+        # stride_tensor = torch.Tensor(dic['stride_tensor'])
+        # gt_class = torch.Tensor(dic['gt_class'])
+        # gt_bbox = torch.Tensor(dic['gt_bbox'])
+        # pad_gt_mask = torch.Tensor(dic['pad_gt_mask'])
+        # targets['gt_class'] = gt_class
+        # targets['gt_bbox'] = gt_bbox
+        # targets['pad_gt_mask'] = pad_gt_mask
+        #
+        # loss = torch.Tensor(dic['loss'])
+        # loss_cls = torch.Tensor(dic['loss_cls'])
+        # loss_iou = torch.Tensor(dic['loss_iou'])
+        # loss_dfl = torch.Tensor(dic['loss_dfl'])
+        # loss_l1 = torch.Tensor(dic['loss_l1'])
+
+        losses = self.get_loss([
+            cls_score_list, reg_distri_list, anchors, anchor_points,
+            num_anchors_list, stride_tensor
+        ], targets)
+        return losses
+
+    def _generate_anchors(self, feats=None):
+        # just use in eval time
+        anchor_points = []
+        stride_tensor = []
+        for i, stride in enumerate(self.fpn_strides):
+            if feats is not None:
+                _, _, h, w = feats[i].shape
+            else:
+                h = int(self.eval_size[0] / stride)
+                w = 
