@@ -137,4 +137,59 @@ class PPYOLOEHead(nn.Module):
                      'dfl': 0.5,
                  },
                  trt=False,
-           
+                 nms_cfg=None,
+                 exclude_nms=False):
+        super(PPYOLOEHead, self).__init__()
+        assert len(in_channels) > 0, "len(in_channels) should > 0"
+        self.in_channels = in_channels
+        self.num_classes = num_classes
+        self.fpn_strides = fpn_strides
+        self.grid_cell_scale = grid_cell_scale
+        self.grid_cell_offset = grid_cell_offset
+        self.reg_max = reg_max
+        # self.iou_loss = GIoULoss()
+        self.iou_loss = None
+        self.loss_weight = loss_weight
+        self.use_varifocal_loss = use_varifocal_loss
+        self.eval_size = eval_size
+
+        self.static_assigner_epoch = static_assigner_epoch
+        self.static_assigner = static_assigner
+        self.assigner = assigner
+        self.nms = nms
+        # if isinstance(self.nms, MultiClassNMS) and trt:
+        #     self.nms.trt = trt
+        self.exclude_nms = exclude_nms
+        self.nms_cfg = nms_cfg
+        # stem
+        self.stem_cls = nn.ModuleList()
+        self.stem_reg = nn.ModuleList()
+        act_name = act
+        act = get_act_fn(
+            act, trt=trt) if act is None or isinstance(act,
+                                                       (str, dict)) else act
+        for in_c in self.in_channels:
+            self.stem_cls.append(ESEAttn(in_c, act=act, act_name=act_name))
+            self.stem_reg.append(ESEAttn(in_c, act=act, act_name=act_name))
+        # pred head
+        self.pred_cls = nn.ModuleList()
+        self.pred_reg = nn.ModuleList()
+        for in_c in self.in_channels:
+            self.pred_cls.append(
+                nn.Conv2d(
+                    in_c, self.num_classes, 3, padding=1))
+            self.pred_reg.append(
+                nn.Conv2d(
+                    in_c, 4 * (self.reg_max + 1), 3, padding=1))
+        # projection conv
+        self.proj_conv = nn.Conv2d(self.reg_max + 1, 1, 1, bias=False)
+        self._init_weights()
+
+    def add_param_group(self, param_groups, base_lr, base_wd, need_clip, clip_norm):
+        for i in range(len(self.in_channels)):
+            self.stem_cls[i].add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+            self.stem_reg[i].add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+            if self.pred_cls[i].weight.requires_grad:
+                param_group_conv_weight = {'params': [self.pred_cls[i].weight]}
+                param_group_conv_weight['lr'] = base_lr * 1.0
+                param_group_conv_weight['base_lr']
