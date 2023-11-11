@@ -192,4 +192,53 @@ class PPYOLOEHead(nn.Module):
             if self.pred_cls[i].weight.requires_grad:
                 param_group_conv_weight = {'params': [self.pred_cls[i].weight]}
                 param_group_conv_weight['lr'] = base_lr * 1.0
-                param_group_conv_weight['base_lr']
+                param_group_conv_weight['base_lr'] = base_lr * 1.0
+                param_group_conv_weight['weight_decay'] = base_wd
+                param_group_conv_weight['need_clip'] = need_clip
+                param_group_conv_weight['clip_norm'] = clip_norm
+                param_groups.append(param_group_conv_weight)
+            if self.pred_cls[i].bias.requires_grad:
+                param_group_conv_bias = {'params': [self.pred_cls[i].bias]}
+                param_group_conv_bias['lr'] = base_lr * 1.0
+                param_group_conv_bias['base_lr'] = base_lr * 1.0
+                param_group_conv_bias['weight_decay'] = base_wd
+                param_group_conv_bias['need_clip'] = need_clip
+                param_group_conv_bias['clip_norm'] = clip_norm
+                param_groups.append(param_group_conv_bias)
+            if self.pred_reg[i].weight.requires_grad:
+                param_group_conv_weight2 = {'params': [self.pred_reg[i].weight]}
+                param_group_conv_weight2['lr'] = base_lr * 1.0
+                param_group_conv_weight2['base_lr'] = base_lr * 1.0
+                param_group_conv_weight2['weight_decay'] = base_wd
+                param_group_conv_weight2['need_clip'] = need_clip
+                param_group_conv_weight2['clip_norm'] = clip_norm
+                param_groups.append(param_group_conv_weight2)
+            if self.pred_reg[i].bias.requires_grad:
+                param_group_conv_bias2 = {'params': [self.pred_reg[i].bias]}
+                param_group_conv_bias2['lr'] = base_lr * 1.0
+                param_group_conv_bias2['base_lr'] = base_lr * 1.0
+                param_group_conv_bias2['weight_decay'] = base_wd
+                param_group_conv_bias2['need_clip'] = need_clip
+                param_group_conv_bias2['clip_norm'] = clip_norm
+                param_groups.append(param_group_conv_bias2)
+
+    @classmethod
+    def from_config(cls, cfg, input_shape):
+        return {'in_channels': [i.channels for i in input_shape], }
+
+    def _init_weights(self):
+        # bias_cls = bias_init_with_prob(0.01)
+        # for cls_, reg_ in zip(self.pred_cls, self.pred_reg):
+        #     constant_(cls_.weight)
+        #     constant_(cls_.bias, bias_cls)
+        #     constant_(reg_.weight)
+        #     constant_(reg_.bias, 1.0)
+
+        self.proj = torch.linspace(0, self.reg_max, self.reg_max + 1)
+        self.proj.requires_grad = False
+        self.proj_conv.weight.requires_grad_(False)
+        self.proj_conv.weight.copy_(
+            self.proj.reshape([1, self.reg_max + 1, 1, 1]))
+
+        if self.eval_size:
+            anchor_points, stride_tensor 
