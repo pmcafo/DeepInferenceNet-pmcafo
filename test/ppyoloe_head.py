@@ -463,4 +463,62 @@ class PPYOLOEHead(nn.Module):
         num_pos = mask_positive.sum()
         # pos/neg loss
         if num_pos > 0:
-            # l1 + io
+            # l1 + iou
+            bbox_mask = mask_positive.unsqueeze(-1).repeat([1, 1, 4])
+            pred_bboxes_pos = torch.masked_select(pred_bboxes,
+                                                   bbox_mask).reshape([-1, 4])
+            assigned_bboxes_pos = torch.masked_select(
+                assigned_bboxes, bbox_mask).reshape([-1, 4])
+            bbox_weight = torch.masked_select(
+                assigned_scores.sum(-1), mask_positive).unsqueeze(-1)
+
+            loss_l1 = F.l1_loss(pred_bboxes_pos, assigned_bboxes_pos)
+
+            loss_iou = self.iou_loss(pred_bboxes_pos,
+                                     assigned_bboxes_pos) * bbox_weight
+            loss_iou = loss_iou.sum() / assigned_scores_sum
+
+            dist_mask = mask_positive.unsqueeze(-1).repeat(
+                [1, 1, (self.reg_max + 1) * 4])
+            pred_dist_pos = torch.masked_select(
+                pred_dist, dist_mask).reshape([-1, 4, self.reg_max + 1])
+            assigned_ltrb = self._bbox2distance(anchor_points, assigned_bboxes)
+            assigned_ltrb_pos = torch.masked_select(
+                assigned_ltrb, bbox_mask).reshape([-1, 4])
+            loss_dfl = self._df_loss(pred_dist_pos,
+                                     assigned_ltrb_pos) * bbox_weight
+            loss_dfl = loss_dfl.sum() / assigned_scores_sum
+        else:
+            loss_l1 = torch.zeros([]).to(pred_dist.device)
+            loss_iou = torch.zeros([]).to(pred_dist.device)
+            loss_dfl = pred_dist.sum() * 0.
+            # loss_l1 = None
+            # loss_iou = None
+            # loss_dfl = None
+        return loss_l1, loss_iou, loss_dfl
+
+    def get_loss(self, head_outs, gt_meta):
+        pred_scores, pred_distri, anchors,\
+        anchor_points, num_anchors_list, stride_tensor = head_outs
+        device = pred_scores.device
+        anchors = anchors.to(device)
+        anchor_points = anchor_points.to(device)
+        stride_tensor = stride_tensor.to(device)
+
+        anchor_points_s = anchor_points / stride_tensor
+        pred_bboxes = self._bbox_decode(anchor_points_s, pred_distri)
+
+        gt_labels = gt_meta['gt_class']
+        gt_labels = gt_labels.to(torch.int64)
+        gt_bboxes = gt_meta['gt_bbox']
+        pad_gt_mask = gt_meta['pad_gt_mask']
+
+        # miemie2013: 剪掉填充的gt
+        num_boxes = pad_gt_mask.sum([1, 2])
+        num_max_boxes = num_boxes.max().to(torch.int32)
+        pad_gt_mask = pad_gt_mask[:, :num_max_boxes, :]
+        gt_labels = gt_labels[:, :num_max_boxes, :]
+        gt_bboxes = gt_bboxes[:, :num_max_boxes, :]
+
+        # label assignment
+        if gt_me
