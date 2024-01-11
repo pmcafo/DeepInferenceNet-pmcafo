@@ -348,4 +348,63 @@ class PPYOLOEHead(nn.Module):
         feats = bottom_names
         cls_score_list, reg_dist_list = [], []
         for i, feat in enumerate(feats):
-   
+            avg_feat = ncnn_utils.adaptive_avg_pool2d(ncnn_data, [feat, ], output_size='(1, 1)')
+
+            x = self.stem_cls[i].export_ncnn(ncnn_data, [feat, avg_feat[0]])
+            # 逐元素相加
+            bottom_names = x + [feat, ]
+            bottom_names = ncnn_utils.binaryOp(ncnn_data, bottom_names, op='Add')
+
+            # 然后是卷积操作
+            cls_score = ncnn_utils.conv2d(ncnn_data, bottom_names, self.pred_cls[i], 'sigmoid')
+
+            x = self.stem_reg[i].export_ncnn(ncnn_data, [feat, avg_feat[0]])
+            # 然后是卷积操作
+            reg_dist = ncnn_utils.conv2d(ncnn_data, x, self.pred_reg[i])
+            reg_dist = ncnn_utils.reshape(ncnn_data, reg_dist, (1, 4, self.reg_max + 1, -1))
+            reg_dist = ncnn_utils.permute(ncnn_data, reg_dist, '(0, 2, 1, 3)')
+            reg_dist = ncnn_utils.softmax(ncnn_data, reg_dist, dim=1)
+            reg_dist = ncnn_utils.conv2d(ncnn_data, reg_dist, self.proj_conv)
+
+            cls_score = ncnn_utils.reshape(ncnn_data, cls_score, (1, self.num_classes, -1))
+            reg_dist = ncnn_utils.reshape(ncnn_data, reg_dist, (1, 4, -1))
+
+            cls_score_list.append(cls_score[0])
+            reg_dist_list.append(reg_dist[0])
+        cls_score_list = ncnn_utils.concat(ncnn_data, cls_score_list, dim=2)  # [N, 80, A]
+        reg_dist_list = ncnn_utils.concat(ncnn_data, reg_dist_list, dim=2)    # [N,  4, A]
+
+        # 转置一下，让ncnn更好处理
+        cls_score_list = ncnn_utils.permute(ncnn_data, cls_score_list, '(0, 2, 1)')  # [N, A, 80]
+        reg_dist_list = ncnn_utils.permute(ncnn_data, reg_dist_list, '(0, 2, 1)')    # [N, A,  4]
+        return cls_score_list + reg_dist_list
+
+    def forward(self, feats, targets=None):
+        assert len(feats) == len(self.fpn_strides), \
+            "The size of feats is not equal to size of fpn_strides"
+
+        if self.training:
+            return self.forward_train(feats, targets)
+        else:
+            return self.forward_eval(feats)
+
+    @staticmethod
+    def _focal_loss(score, label, alpha=0.25, gamma=2.0):
+        weight = (score - label).pow(gamma)
+        if alpha > 0:
+            alpha_t = alpha * label + (1 - alpha) * (1 - label)
+            weight *= alpha_t
+
+        # loss = F.binary_cross_entropy(
+        #     score, label, weight=weight, reduction='sum')
+
+        score = score.to(torch.float32)
+        eps = 1e-9
+        loss = label * (0 - torch.log(score + eps)) + \
+               (1.0 - label) * (0 - torch.log(1.0 - score + eps))
+        loss *= weight
+        loss = loss.sum()
+        return loss
+
+    @staticmethod
+    def _varifocal_loss(pred_score, gt_score, label, alpha=0.75, g
