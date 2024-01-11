@@ -407,4 +407,60 @@ class PPYOLOEHead(nn.Module):
         return loss
 
     @staticmethod
-    def _varifocal_loss(pred_score, gt_score, label, alpha=0.75, g
+    def _varifocal_loss(pred_score, gt_score, label, alpha=0.75, gamma=2.0):
+        weight = alpha * pred_score.pow(gamma) * (1 - label) + gt_score * label
+
+        # loss = F.binary_cross_entropy(
+        #     pred_score, gt_score, weight=weight, reduction='sum')
+
+        # pytorch的F.binary_cross_entropy()的weight不能向前传播梯度，但是
+        # paddle的F.binary_cross_entropy()的weight可以向前传播梯度（给pred_score），
+        # 所以这里手动实现F.binary_cross_entropy()
+        # 使用混合精度训练时，pred_score类型是torch.float16，需要转成torch.float32避免log(0)=nan
+        pred_score = pred_score.to(torch.float32)
+        eps = 1e-9
+        loss = gt_score * (0 - torch.log(pred_score + eps)) + \
+               (1.0 - gt_score) * (0 - torch.log(1.0 - pred_score + eps))
+        loss *= weight
+        loss = loss.sum()
+        return loss
+
+    def _bbox_decode(self, anchor_points, pred_dist):
+        b, l, _ = get_static_shape(pred_dist)
+        device = pred_dist.device
+        pred_dist = pred_dist.reshape([b, l, 4, self.reg_max + 1])
+        pred_dist = F.softmax(pred_dist, dim=-1)
+        pred_dist = pred_dist.matmul(self.proj.to(device))
+        return batch_distance2bbox(anchor_points, pred_dist)
+
+    def _bbox2distance(self, points, bbox):
+        x1y1, x2y2 = torch.split(bbox, 2, -1)
+        lt = points - x1y1
+        rb = x2y2 - points
+        return torch.cat([lt, rb], -1).clamp(0, self.reg_max - 0.01)
+
+    def _df_loss(self, pred_dist, target):
+        target_left = target.to(torch.int64)
+        target_right = target_left + 1
+        weight_left = target_right.to(torch.float32) - target
+        weight_right = 1 - weight_left
+
+        eps = 1e-9
+        # 使用混合精度训练时，pred_dist类型是torch.float16，pred_dist_act类型是torch.float32
+        pred_dist_act = F.softmax(pred_dist, dim=-1)
+        target_left_onehot = F.one_hot(target_left, pred_dist_act.shape[-1])
+        target_right_onehot = F.one_hot(target_right, pred_dist_act.shape[-1])
+        loss_left = target_left_onehot * (0 - torch.log(pred_dist_act + eps))
+        loss_right = target_right_onehot * (0 - torch.log(pred_dist_act + eps))
+        loss_left = loss_left.sum(-1) * weight_left
+        loss_right = loss_right.sum(-1) * weight_right
+        return (loss_left + loss_right).mean(-1, keepdim=True)
+
+    def _bbox_loss(self, pred_dist, pred_bboxes, anchor_points, assigned_labels,
+                   assigned_bboxes, assigned_scores, assigned_scores_sum):
+        # select positive samples mask
+        mask_positive = (assigned_labels != self.num_classes)
+        num_pos = mask_positive.sum()
+        # pos/neg loss
+        if num_pos > 0:
+            # l1 + io
