@@ -51,4 +51,11 @@ g++ -S test/test2_00000_gcc.cpp -fopenmp -march=native -o test2_00000_gcc_omp_fa
     int M = 13;
     int bytes = sizeof(float) * M;
     float* out_true = (float*) malloc(bytes);
-    float* out =
+    float* out = (float*) malloc(bytes);
+
+//    init_ptr(out, M, 3.3f, num_threads_);
+    init_ptr(out, M, 3.3f);
+
+
+    return 0;
+}
