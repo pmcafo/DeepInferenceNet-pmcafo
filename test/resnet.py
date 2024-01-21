@@ -564,3 +564,363 @@ class BottleNeck(nn.Module):
             lr=lr)
 
         self.std_senet = std_senet
+        if self.std_senet:
+            self.se = SELayer(ch_out * self.expansion)
+
+    def forward(self, inputs):
+
+        out = self.branch2a(inputs)
+        out = self.branch2b(out)
+        out = self.branch2c(out)
+
+        if self.std_senet:
+            out = self.se(out)
+
+        if self.shortcut:
+            short = inputs
+        else:
+            short = self.short(inputs)
+
+        # out = paddle.add(x=out, y=short)
+        out = out + short
+        out = F.relu(out)
+
+        return out
+
+    def export_ncnn(self, ncnn_data, bottom_names):
+        out = self.branch2a.export_ncnn(ncnn_data, bottom_names)
+        out = self.branch2b.export_ncnn(ncnn_data, out)
+        out = self.branch2c.export_ncnn(ncnn_data, out)
+        if self.std_senet:
+            out = self.se.export_ncnn(ncnn_data, out)
+
+        if self.shortcut:
+            short = bottom_names
+        else:
+            if isinstance(self.short, nn.Sequential):
+                short = bottom_names
+                for layer in self.short:
+                    if isinstance(layer, ConvNormLayer):
+                        short = layer.export_ncnn(ncnn_data, short)
+                    elif isinstance(layer, nn.AvgPool2d):
+                        short = ncnn_utils.Fpooling(ncnn_data, short, op='AveragePool', kernel_size=2, stride=2, padding=0, ceil_mode=True)
+                    else:
+                        raise NotImplementedError("not implemented.")
+            else:
+                short = self.short.export_ncnn(ncnn_data, bottom_names)
+
+        out = ncnn_utils.binaryOp(ncnn_data, out + short, op='Add')
+        out = ncnn_utils.activation(ncnn_data, out, 'relu')
+        return out
+
+    def fix_bn(self):
+        self.branch2a.fix_bn()
+        self.branch2b.fix_bn()
+        self.branch2c.fix_bn()
+        if self.std_senet:
+            self.se.fix_bn()
+        if not self.shortcut:
+            if isinstance(self.short, nn.Sequential):
+                for layer in self.short:
+                    if isinstance(layer, ConvNormLayer):
+                        layer.fix_bn()
+            else:
+                self.short.fix_bn()
+
+    def add_param_group(self, param_groups, base_lr, base_wd, need_clip, clip_norm):
+        self.branch2a.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+        self.branch2b.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+        self.branch2c.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+        if self.std_senet:
+            self.se.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+        if not self.shortcut:
+            if isinstance(self.short, nn.Sequential):
+                for layer in self.short:
+                    if isinstance(layer, ConvNormLayer):
+                        layer.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+            else:
+                self.short.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+
+
+class Blocks(nn.Module):
+    def __init__(self,
+                 block,
+                 ch_in,
+                 ch_out,
+                 count,
+                 name_adapter,
+                 stage_num,
+                 variant='b',
+                 groups=1,
+                 base_width=64,
+                 lr=1.0,
+                 norm_type='bn',
+                 norm_decay=0.,
+                 freeze_norm=True,
+                 dcn_v2=False,
+                 std_senet=False):
+        super(Blocks, self).__init__()
+
+        self.blocks = []
+        for i in range(count):
+            conv_name = name_adapter.fix_layer_warp_name(stage_num, count, i)
+            layer = block(
+                    ch_in=ch_in,
+                    ch_out=ch_out,
+                    stride=2 if i == 0 and stage_num != 2 else 1,
+                    shortcut=False if i == 0 else True,
+                    variant=variant,
+                    groups=groups,
+                    base_width=base_width,
+                    lr=lr,
+                    norm_type=norm_type,
+                    norm_decay=norm_decay,
+                    freeze_norm=freeze_norm,
+                    dcn_v2=dcn_v2,
+                    std_senet=std_senet)
+            self.add_module(conv_name, layer)
+            self.blocks.append(layer)
+            if i == 0:
+                ch_in = ch_out * block.expansion
+
+    def forward(self, inputs):
+        block_out = inputs
+        for block in self.blocks:
+            block_out = block(block_out)
+        return block_out
+
+    def export_ncnn(self, ncnn_data, bottom_names):
+        for block in self.blocks:
+            bottom_names = block.export_ncnn(ncnn_data, bottom_names)
+        return bottom_names
+
+    def fix_bn(self):
+        for block in self.blocks:
+            block.fix_bn()
+
+    def add_param_group(self, param_groups, base_lr, base_wd, need_clip, clip_norm):
+        for block in self.blocks:
+            block.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+
+
+class ResNet(nn.Module):
+    __shared__ = ['norm_type']
+
+    def __init__(self,
+                 depth=50,
+                 ch_in=64,
+                 variant='b',
+                 lr_mult_list=[1.0, 1.0, 1.0, 1.0],
+                 groups=1,
+                 base_width=64,
+                 norm_type='bn',
+                 norm_decay=0,
+                 freeze_norm=True,
+                 freeze_at=0,
+                 return_idx=[0, 1, 2, 3],
+                 dcn_v2_stages=[-1],
+                 num_stages=4,
+                 std_senet=False):
+        """
+        Residual Network, see https://arxiv.org/abs/1512.03385
+
+        Args:
+            depth (int): ResNet depth, should be 18, 34, 50, 101, 152.
+            ch_in (int): output channel of first stage, default 64
+            variant (str): ResNet variant, supports 'a', 'b', 'c', 'd' currently
+            lr_mult_list (list): learning rate ratio of different resnet stages(2,3,4,5),
+                                 lower learning rate ratio is need for pretrained model
+                                 got using distillation(default as [1.0, 1.0, 1.0, 1.0]).
+            groups (int): group convolution cardinality
+            base_width (int): base width of each group convolution
+            norm_type (str): normalization type, 'bn', 'sync_bn' or 'affine_channel'
+            norm_decay (float): weight decay for normalization layer weights
+            freeze_norm (bool): freeze normalization layers
+            freeze_at (int): freeze the backbone at which stage
+            return_idx (list): index of the stages whose feature maps are returned
+            dcn_v2_stages (list): index of stages who select deformable conv v2
+            num_stages (int): total num of stages
+            std_senet (bool): whether use senet, default True
+        """
+        super(ResNet, self).__init__()
+        self._model_type = 'ResNet' if groups == 1 else 'ResNeXt'
+        assert num_stages >= 1 and num_stages <= 4
+        self.depth = depth
+        self.variant = variant
+        self.groups = groups
+        self.base_width = base_width
+        self.norm_type = norm_type
+        self.norm_decay = norm_decay
+        self.freeze_norm = freeze_norm
+        self.freeze_at = freeze_at
+        if isinstance(return_idx, Integral):
+            return_idx = [return_idx]
+        assert max(return_idx) < num_stages, \
+            'the maximum return index must smaller than num_stages, ' \
+            'but received maximum return index is {} and num_stages ' \
+            'is {}'.format(max(return_idx), num_stages)
+        self.return_idx = return_idx
+        self.num_stages = num_stages
+        assert len(lr_mult_list) == 4, \
+            "lr_mult_list length must be 4 but got {}".format(len(lr_mult_list))
+        if isinstance(dcn_v2_stages, Integral):
+            dcn_v2_stages = [dcn_v2_stages]
+        assert max(dcn_v2_stages) < num_stages
+
+        if isinstance(dcn_v2_stages, Integral):
+            dcn_v2_stages = [dcn_v2_stages]
+        assert max(dcn_v2_stages) < num_stages
+        self.dcn_v2_stages = dcn_v2_stages
+
+        block_nums = ResNet_cfg[depth]
+        na = NameAdapter(self)
+
+        conv1_name = na.fix_c1_stage_name()
+        if variant in ['c', 'd']:
+            conv_def = [
+                [3, ch_in // 2, 3, 2, "conv1_1"],
+                [ch_in // 2, ch_in // 2, 3, 1, "conv1_2"],
+                [ch_in // 2, ch_in, 3, 1, "conv1_3"],
+            ]
+        else:
+            conv_def = [[3, ch_in, 7, 2, conv1_name]]
+        self.conv1 = nn.Sequential()
+        for (c_in, c_out, k, s, _name) in conv_def:
+            self.conv1.add_module(
+                _name,
+                ConvNormLayer(
+                    ch_in=c_in,
+                    ch_out=c_out,
+                    filter_size=k,
+                    stride=s,
+                    groups=1,
+                    act='relu',
+                    norm_type=norm_type,
+                    norm_decay=norm_decay,
+                    freeze_norm=freeze_norm,
+                    lr=1.0))
+
+        self.ch_in = ch_in
+        ch_out_list = [64, 128, 256, 512]
+        block = BottleNeck if depth >= 50 else BasicBlock
+
+        self._out_channels = [block.expansion * v for v in ch_out_list]
+        self._out_strides = [4, 8, 16, 32]
+
+        self.res_layers = []
+        for i in range(num_stages):
+            lr_mult = lr_mult_list[i]
+            stage_num = i + 2
+            res_name = "res{}".format(stage_num)
+            res_layer = Blocks(
+                    block,
+                    self.ch_in,
+                    ch_out_list[i],
+                    count=block_nums[i],
+                    name_adapter=na,
+                    stage_num=stage_num,
+                    variant=variant,
+                    groups=groups,
+                    base_width=base_width,
+                    lr=lr_mult,
+                    norm_type=norm_type,
+                    norm_decay=norm_decay,
+                    freeze_norm=freeze_norm,
+                    dcn_v2=(i in self.dcn_v2_stages),
+                    std_senet=std_senet)
+            self.add_module(res_name, res_layer)
+            self.res_layers.append(res_layer)
+            self.ch_in = self._out_channels[i]
+
+        if freeze_at >= 0:
+            self._freeze_parameters(self.conv1)
+            for i in range(min(freeze_at + 1, num_stages)):
+                self._freeze_parameters(self.res_layers[i])
+
+    def _freeze_parameters(self, m):
+        for p in m.parameters():
+            p.requires_grad_(False)
+
+    @property
+    def out_shape(self):
+        return [
+            ShapeSpec(
+                channels=self._out_channels[i], stride=self._out_strides[i])
+            for i in self.return_idx
+        ]
+
+    def forward(self, x):
+        conv1 = self.conv1(x)
+        x = F.max_pool2d(conv1, kernel_size=3, stride=2, padding=1)
+        outs = []
+        for idx, stage in enumerate(self.res_layers):
+            x = stage(x)
+            if idx in self.return_idx:
+                outs.append(x)
+
+        # Debug. calc ddd with ncnn output.
+        # import numpy as np
+        # y2 = outs[2].cpu().detach().numpy()
+        # ncnn_output = 'D://GitHub/ncnn2/build/examples/output.txt'
+        # with open(ncnn_output, 'r', encoding='utf-8') as f:
+        #     for line in f:
+        #         line = line.strip()
+        # line = line[:-1]
+        # ss = line.split(',')
+        # y = []
+        # for s in ss:
+        #     y.append(float(s))
+        # y = np.array(y).astype(np.float32)
+        # y = np.reshape(y, y2.shape)
+        # print(y2.shape)
+        # ddd = np.sum((y - y2) ** 2)
+        # print('ddd=%.9f' % ddd)
+        # ddd2 = np.mean((y - y2) ** 2)
+        # print('ddd=%.9f' % ddd2)
+        return outs
+
+    def export_ncnn(self, ncnn_data, bottom_names):
+        for layer in self.conv1:
+            bottom_names = layer.export_ncnn(ncnn_data, bottom_names)
+        bottom_names = ncnn_utils.Fpooling(ncnn_data, bottom_names, op='MaxPool', kernel_size=3, stride=2, padding=1)
+        out_names = []
+        for idx, stage in enumerate(self.res_layers):
+            bottom_names = stage.export_ncnn(ncnn_data, bottom_names)
+            if idx in self.return_idx:
+                out_names.append(bottom_names[0])
+        return out_names
+
+    def fix_bn(self):
+        for layer in self.conv1:
+            layer.fix_bn()
+        for idx, stage in enumerate(self.res_layers):
+            stage.fix_bn()
+
+    def add_param_group(self, param_groups, base_lr, base_wd, need_clip, clip_norm):
+        for layer in self.conv1:
+            layer.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+        for idx, stage in enumerate(self.res_layers):
+            stage.add_param_group(param_groups, base_lr, base_wd, need_clip, clip_norm)
+
+
+class Res5Head(nn.Module):
+    def __init__(self, depth=50):
+        super(Res5Head, self).__init__()
+        feat_in, feat_out = [1024, 512]
+        if depth < 50:
+            feat_in = 256
+        na = NameAdapter(self)
+        block = BottleNeck if depth >= 50 else BasicBlock
+        self.res5 = Blocks(
+            block, feat_in, feat_out, count=3, name_adapter=na, stage_num=5)
+        self.feat_out = feat_out if depth < 50 else feat_out * 4
+
+    @property
+    def out_shape(self):
+        return [ShapeSpec(
+            channels=self.feat_out,
+            stride=16, )]
+
+    def forward(self, roi_feat, stage=0):
+        y = self.res5(roi_feat)
+        return y
