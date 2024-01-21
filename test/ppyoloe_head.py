@@ -578,4 +578,44 @@ class PPYOLOEHead(nn.Module):
                             assigned_labels, assigned_bboxes, assigned_scores,
                             assigned_scores_sum)
 
-  
+        loss = self.loss_weight['class'] * loss_cls + \
+               self.loss_weight['iou'] * loss_iou + \
+               self.loss_weight['dfl'] * loss_dfl
+        out_dict = {
+            'total_loss': loss,
+            'loss_cls': loss_cls,
+            'loss_iou': loss_iou,
+            'loss_dfl': loss_dfl,
+            'loss_l1': loss_l1,
+        }
+        return out_dict
+
+    def post_process(self, head_outs, scale_factor):
+        pred_scores, pred_dist, anchor_points, stride_tensor = head_outs
+        pred_bboxes = batch_distance2bbox(anchor_points, pred_dist.permute((0, 2, 1)))
+        pred_bboxes *= stride_tensor
+        # scale bbox to origin
+        # torch的split和paddle有点不同，torch的第二个参数表示的是每一份的大小，paddle的第二个参数表示的是分成几份。
+        scale_y, scale_x = torch.split(scale_factor, 1, -1)
+        scale_factor = torch.cat(
+            [scale_x, scale_y, scale_x, scale_y], -1).reshape([-1, 1, 4])
+        pred_bboxes /= scale_factor   # [N, A, 4]     pred_scores.shape = [N, 80, A]
+        if self.exclude_nms:
+            # `exclude_nms=True` just use in benchmark
+            return pred_bboxes.sum(), pred_scores.sum()
+        else:
+            # nms
+            preds = []
+            nms_cfg = copy.deepcopy(self.nms_cfg)
+            nms_type = nms_cfg.pop('nms_type')
+            batch_size = pred_bboxes.shape[0]
+            yolo_scores = pred_scores.permute((0, 2, 1))  #  [N, A, 80]
+            if nms_type == 'matrix_nms':
+                for i in range(batch_size):
+                    pred = matrix_nms(pred_bboxes[i, :, :], yolo_scores[i, :, :], **nms_cfg)
+                    preds.append(pred)
+            elif nms_type == 'multiclass_nms':
+                preds = my_multiclass_nms(pred_bboxes, yolo_scores, **nms_cfg)
+            return preds
+            # bbox_pred, bbox_num, _ = self.nms(pred_bboxes, pred_scores)
+            # return bbox_pred, bbox_num
