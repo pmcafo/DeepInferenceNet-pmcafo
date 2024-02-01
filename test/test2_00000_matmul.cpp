@@ -89,4 +89,78 @@ void matmul2(float* A, float* B, float* C, int batch_size, int ch_in, int ch_out
 int main(int argc, char** argv)
 {
 /*
-g++ test/test2_00000_matmul.cpp -fopenmp -march=native -o test2_00000
+g++ test/test2_00000_matmul.cpp -fopenmp -march=native -o test2_00000_matmul_fast.out -w -O3
+
+g++ test/test2_00000_matmul.cpp -fopenmp -march=native -o test2_00000_matmul.out -w
+
+./test2_00000_matmul_fast.out
+
+./test2_00000_matmul.out
+
+
+*/
+    char* test_name = "00000";
+    const int num_threads_ = 12;
+
+    int batch_size = 2;
+    int output_size = 256;
+    int in_features = 64;
+    int kH = 3;
+    int kW = 3;
+    int out_features = 128;
+
+    int M = batch_size * output_size * output_size;
+    int K = in_features * kH * kW;
+    int N = out_features;
+
+//    int M = 640;
+//    int K = 608;
+//    int N = 512;
+
+    int bytes = sizeof(float) * M * K;
+    float* im2col = (float*) malloc(bytes);
+    bytes = sizeof(float) * K * N;
+    float* weight = (float*) malloc(bytes);
+    bytes = sizeof(float) * M * N;
+    float* out_true = (float*) malloc(bytes);
+    float* out = (float*) malloc(bytes);
+
+    char file_name[256];
+    sprintf(file_name, "test/save_data/%s-x.txt", test_name);
+    load_from_txt(file_name, im2col, M * K, num_threads_);
+    sprintf(file_name, "test/save_data/%s-w.txt", test_name);
+    load_from_txt(file_name, weight, K * N, num_threads_);
+    sprintf(file_name, "test/save_data/%s-y.txt", test_name);
+    load_from_txt(file_name, out_true, M * N, num_threads_);
+
+    printf("======================== calc ========================\n");
+    for (int batch_idx = 0; batch_idx < 8; batch_idx++)
+    {
+        #pragma omp parallel for num_threads(num_threads_)
+        for (int i = 0; i < M * N; i++)
+        {
+            *(out + i) = 0.f;
+        }
+        auto startTime = std::chrono::system_clock::now();
+        matmul1(im2col, weight, out, M, K, N, num_threads_);
+        auto endTime = std::chrono::system_clock::now();
+        // 1秒=1000毫秒=1000,000微秒
+        int cost_microseconds = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+        float cost_ms = (float)cost_microseconds / 1000.f;
+        printf("eval forward cost_time = %f ms\n", cost_ms);
+    }
+    float diff = calc_diff(out, out_true, M * N);
+    printf("diff=%f (%s)\n", diff, "y");
+
+    for (int batch_idx = 0; batch_idx < 8; batch_idx++)
+    {
+        #pragma omp parallel for num_threads(num_threads_)
+        for (int i = 0; i < M * N; i++)
+        {
+            *(out + i) = 0.f;
+        }
+        auto startTime = std::chrono::system_clock::now();
+        matmul2(im2col, weight, out, M, K, N, num_threads_);
+        auto endTime = std::chrono::system_clock::now();
+        // 1秒=1000毫秒=1000,000微秒
+        int cost_microseconds = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime)
