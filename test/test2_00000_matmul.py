@@ -89,4 +89,9 @@ ddd = np.sum((v1 - v3) ** 2)
 print('diff=%.6f (%s)' % (ddd, 'y'))
 
 
-save_as_txt("save_data/%s-x.txt" % (test_name,
+save_as_txt("save_data/%s-x.txt" % (test_name, ), im2col)
+save_as_txt("save_data/%s-w.txt" % (test_name, ), weight)
+save_as_txt("save_data/%s-wt.txt" % (test_name, ), weight_t)
+save_as_txt("save_data/%s-y.txt" % (test_name, ), yyyyy1)
+
+print()
