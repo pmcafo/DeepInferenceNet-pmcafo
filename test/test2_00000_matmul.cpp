@@ -163,4 +163,19 @@ g++ test/test2_00000_matmul.cpp -fopenmp -march=native -o test2_00000_matmul.out
         matmul2(im2col, weight, out, M, K, N, num_threads_);
         auto endTime = std::chrono::system_clock::now();
         // 1秒=1000毫秒=1000,000微秒
-        int cost_microseconds = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime)
+        int cost_microseconds = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+        float cost_ms = (float)cost_microseconds / 1000.f;
+        printf("eval forward cost_time = %f ms\n", cost_ms);
+    }
+    diff = calc_diff(out, out_true, M * N);
+    printf("diff=%f (%s)\n", diff, "y");
+
+    free(im2col);
+    im2col = nullptr;
+    free(weight);
+    weight = nullptr;
+    free(out);
+    out = nullptr;
+
+    return 0;
+}
