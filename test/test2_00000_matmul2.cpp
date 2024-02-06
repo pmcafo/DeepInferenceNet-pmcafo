@@ -169,4 +169,14 @@ cl test/test2_00000_matmul.cpp /Yc /Yu
         printf("eval forward cost_time = %f ms\n", cost_ms);
 
         float diff = calc_diff(out, out_true, M * N);
-        printf("diff=%f (%s)\n", 
+        printf("diff=%f (%s)\n", diff, "y");
+    }
+    free(im2col);
+    im2col = nullptr;
+    free(weight);
+    weight = nullptr;
+    free(out);
+    out = nullptr;
+
+    return 0;
+}
