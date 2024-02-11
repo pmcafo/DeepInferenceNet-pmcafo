@@ -80,4 +80,6 @@ print('diff=%.6f (%s)' % (ddd, 'y'))
 save_as_txt("save_data/%s-x.txt" % (test_name, ), im2col)
 save_as_txt("save_data/%s-w.txt" % (test_name, ), weight)
 save_as_txt("save_data/%s-y.txt" % (test_name, ), add_result)
-save_as_txt("save_data/%s-z.txt" % (test_na
+save_as_txt("save_data/%s-z.txt" % (test_name, ), mul_result)
+
+print()
