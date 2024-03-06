@@ -112,4 +112,45 @@ for i in range(K):
         # ele = '%s[%d][%d] = ' % (output_name, i, j)
         # ele = '%s[nn, bb, %d, %d] = ' % (output_name, i, j)
         # ele = '%s[%d, %d, tid, ic] = ' % (output_name, i, j)
-        # ele 
+        # ele = '%s[((%d * 4 + %d) * tile_num + tid) * in_C + ic] = ' % (output_name, i, j)
+        # ele = '%s[%d, %d, tid, oc] = ' % (output_name, i, j)
+        ele = '%s[((%d * otile_size + %d) * tile_num + tid) * out_C + oc] = ' % (output_name, i, j)
+        for k in range(M):
+            aaa = copy.deepcopy(bt_x[i][k])
+            bbb = B[k][j]
+            if bbb == -1:
+                for p in range(len(aaa)):
+                    aaa[p] = '-' + aaa[p]
+                    aaa[p] = aaa[p].replace('--', '')
+            elif bbb == 0:
+                aaa = ''
+            elif bbb == 1:
+                pass
+            else:
+                exit(1)
+            if aaa == '':
+                pass
+            else:
+                for p in range(len(aaa)):
+                    bt_x_b[i][j].append(aaa[p])
+                    ele += ' + %s' % (aaa[p], )
+        eles.append(ele)
+
+eles_new = []
+for p in range(len(eles)):
+    eee = eles[p]
+    eee = eee.replace("=  +", "=")
+    eee = eee.replace("+ -", "- ")
+    eee = eee.replace("+0]", "]")
+    eee = eee + ";"
+    eles_new.append(eee)
+    print(eles_new[p])
+
+print()
+
+
+
+
+
+
+
