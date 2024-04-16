@@ -116,4 +116,54 @@ input_size = 640
 
 model.eval()
 model_std = model.state_dict()
-# x = torch.randn([batch_size, in_features, input_size,
+# x = torch.randn([batch_size, in_features, input_size, input_size])
+
+im = cv2.imread('000000000019.jpg')
+im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+im_shape = im.shape
+im_scale_x = float(input_size) / float(im_shape[1])
+im_scale_y = float(input_size) / float(im_shape[0])
+im = cv2.resize(
+    im,
+    None,
+    None,
+    fx=im_scale_x,
+    fy=im_scale_y,
+    interpolation=2)
+
+mean=[123.675, 116.28, 103.53]
+std=[58.395, 57.12, 57.375]
+im = im.astype(np.float32, copy=False)
+mean = np.array(mean)[np.newaxis, np.newaxis, :]
+std = np.array(std)[np.newaxis, np.newaxis, :]
+im -= mean
+im /= std
+
+im = np.swapaxes(im, 1, 2)
+im = np.swapaxes(im, 1, 0)
+x = torch.from_numpy(im).to(torch.float32)
+x = torch.unsqueeze(x, 0)
+
+
+x.requires_grad_(True)
+
+for batch_idx in range(8):
+    start_time = time.time()
+    y = model(x)
+    cost = time.time() - start_time
+    print('eval forward cost_time: {0:.3f} ms'.format(cost * 1000.))
+
+
+if miemienet_image_data_format == "NCHW":
+    save_as_txt("save_data/%s-eval-x.txt" % (test_name, ), x)
+    save_as_txt("save_data/%s-eval-y.txt" % (test_name, ), y)
+elif miemienet_image_data_format == "NHWC":
+    save_as_txt("save_data/%s-eval-x.txt" % (test_name, ), x.permute((0, 2, 3, 1)))
+    # save_as_txt("save_data/%s-eval-y.txt" % (test_name, ), y.permute((0, 2, 3, 1)))
+    save_as_txt("save_data/%s-eval-y.txt" % (test_name, ), y.permute((0, 2, 1)))
+
+print('save ...')
+save_weights_as_miemienet("save_data/%s-modelfinal" % (test_name, ), model.state_dict(), miemienet_image_data_format, fuse_conv_bn, 1e-5)
+print('saved!')
+
+print()
